@@ -29,11 +29,11 @@ while true; do
     --exclude '.*/\.dart_tool/.*' \
     --exclude '.*/build/.*' \
     --exclude '.*/ios/Pods/.*' \
+    --exclude '.*/ios/Flutter/.*' \
     --exclude '.*/\.flutter-sdk/.*' \
-    lib assets ios android pubspec.yaml pubspec.lock >/dev/null
+    lib assets pubspec.yaml pubspec.lock >/dev/null
 
   echo "[live] Degisiklik algilandi, uygulama yeniden baslatiliyor..."
   kill -TERM "$APP_PID" >/dev/null 2>&1 || true
   wait "$APP_PID" >/dev/null 2>&1 || true
 done
-

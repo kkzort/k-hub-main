@@ -28,8 +28,10 @@ while true; do
     --exclude '.*/\.dart_tool/.*' \
     --exclude '.*/build/.*' \
     --exclude '.*/ios/Pods/.*' \
+    --exclude '.*/ios/Flutter/.*' \
+    --exclude '.*/macos/Flutter/ephemeral/.*' \
     --exclude '.*/\.flutter-sdk/.*' \
-    . >/dev/null
+    lib assets android ios macos linux web windows test pubspec.yaml pubspec.lock firebase.json firestore.rules firestore.indexes.json storage.rules >/dev/null
 
   # Kisa debounce
   sleep 1
@@ -46,4 +48,3 @@ while true; do
     git push origin HEAD >/dev/null 2>&1 || echo "[sync] Push basarisiz, sonraki degisiklikte tekrar denenecek."
   fi
 done
-
