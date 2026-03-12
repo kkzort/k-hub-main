@@ -3930,7 +3930,7 @@ class _HomeViewState extends State<HomeView> {
                       "Destek Merkezi",
                       () {
                         Navigator.pop(ctx);
-                        Future.delayed(const Duration(milliseconds: 220), () {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (!mounted) return;
                           _openHelpAndSupportPage();
                         });
@@ -3984,16 +3984,16 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _openHelpAndSupportPage() {
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
-        builder: (_) => Scaffold(
+        builder: (pageContext) => Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.surface,
             elevation: 0,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: AppColors.textHeader),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.of(pageContext).maybePop(),
             ),
             title: Text(
               "Yardım ve Destek",
