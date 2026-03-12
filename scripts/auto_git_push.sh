@@ -1,50 +1,42 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
-
-if ! command -v fswatch >/dev/null 2>&1; then
-  echo "[sync] fswatch bulunamadi. Kurulum: brew install fswatch"
-  exit 1
-fi
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "[sync] Bu klasor bir git deposu degil."
   exit 1
 fi
 
-HAS_ORIGIN=1
-if ! git remote get-url origin >/dev/null 2>&1; then
-  HAS_ORIGIN=0
-  echo "[sync] origin remote yok. Simdilik sadece lokal commit atilacak."
-fi
-
-echo "[sync] Otomatik commit/push basladi."
+echo "[sync] Otomatik commit/push basladi (polling mode)."
 
 while true; do
-  fswatch -1 -r \
-    --exclude '.*\.git/.*' \
-    --exclude '.*/\.dart_tool/.*' \
-    --exclude '.*/build/.*' \
-    --exclude '.*/ios/Pods/.*' \
-    --exclude '.*/ios/Flutter/.*' \
-    --exclude '.*/macos/Flutter/ephemeral/.*' \
-    --exclude '.*/\.flutter-sdk/.*' \
-    lib assets android ios macos linux web windows test pubspec.yaml pubspec.lock firebase.json firestore.rules firestore.indexes.json storage.rules >/dev/null
+  sleep 2
 
-  # Kisa debounce
-  sleep 1
+  if [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
+    continue
+  fi
 
-  git add -A
+  if ! git add -A; then
+    echo "[sync] git add hatasi, yeniden denenecek."
+    continue
+  fi
+
   if git diff --cached --quiet; then
     continue
   fi
 
   MSG="chore: auto sync $(date '+%Y-%m-%d %H:%M:%S')"
-  git commit -m "$MSG" >/dev/null 2>&1 || true
+  if ! git commit -m "$MSG" >/dev/null 2>&1; then
+    echo "[sync] commit atilamadi (muhtemelen degisiklik kalmadi), devam ediliyor."
+    continue
+  fi
 
-  if [[ "$HAS_ORIGIN" -eq 1 ]]; then
-    git push origin HEAD >/dev/null 2>&1 || echo "[sync] Push basarisiz, sonraki degisiklikte tekrar denenecek."
+  if git remote get-url origin >/dev/null 2>&1; then
+    git push origin HEAD >/dev/null 2>&1 || \
+      echo "[sync] Push basarisiz, sonraki degisiklikte tekrar denenecek."
+  else
+    echo "[sync] origin remote yok. Simdilik sadece lokal commit atiliyor."
   fi
 done
