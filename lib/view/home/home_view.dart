@@ -3930,9 +3930,9 @@ class _HomeViewState extends State<HomeView> {
                       "Destek Merkezi",
                       () {
                         Navigator.pop(ctx);
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Future.delayed(const Duration(milliseconds: 180), () {
                           if (!mounted) return;
-                          _openHelpAndSupportPage();
+                          _showHelpAndSupportSheet();
                         });
                       },
                       subtitle: "Yardım, rehber ve iletişim",
@@ -3980,65 +3980,6 @@ class _HomeViewState extends State<HomeView> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("E-posta uygulaması açılamadı.")),
-    );
-  }
-
-  void _openHelpAndSupportPage() {
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(
-        builder: (pageContext) => Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: AppColors.surface,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: AppColors.textHeader),
-              onPressed: () => Navigator.of(pageContext).maybePop(),
-            ),
-            title: Text(
-              "Yardım ve Destek",
-              style: TextStyle(
-                color: AppColors.textHeader,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Destek için aşağıdaki iletişim bilgisini kullanabilirsin.",
-                    style: TextStyle(fontSize: 13, color: AppColors.textBody),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSettingsCard([
-                    _buildSettingsItem(
-                      Icons.email_outlined,
-                      "Destek E-postası",
-                      _sendSupportEmail,
-                      subtitle: "info@algow.net",
-                    ),
-                  ]),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Hızlı Kullanım Rehberi",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textHeader,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildQuickGuideCard(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
