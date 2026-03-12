@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Kullanıcılar - giriş yapmış herkes okuyabilir, sadece kendi profilini yazabilir
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Mesajlar (Kampüs Sohbet) - giriş yapmış herkes okuyup yazabilir
+    match /messages/{messageId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // DM Konuşmalar - sadece katılımcılar okuyup yazabilir
+    match /conversations/{conversationId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid in resource.data.participantIds;
+      allow create: if request.auth != null;
+
+      // Alt koleksiyon: mesajlar
+      match /messages/{msgId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    // Gönderiler (Sosyal) - giriş yapmış herkes okuyabilir
+    match /posts/{postId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Hikayeler
+    match /stories/{storyId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Arkadaşlıklar
+    match /friendships/{friendshipId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Notlar
+    match /notes/{noteId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Bildirimler
+    match /notifications/{notifId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Sohbet ayarları - herkes okuyabilir, sadece admin yazabilir
+    match /chat_settings/{settingId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Diğer koleksiyonlar - giriş yapmış kullanıcılara izin ver
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

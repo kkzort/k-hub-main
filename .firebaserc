@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "k-hub-7a8a2": {
+      "storage": {
+        "k-hub-7a8a2": [
+          "k-hub-7a8a2.firebasestorage.app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
