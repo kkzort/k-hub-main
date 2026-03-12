@@ -3926,6 +3926,18 @@ class _HomeViewState extends State<HomeView> {
                       },
                     ),
                     _buildSettingsItem(
+                      Icons.support_agent_rounded,
+                      "Destek Merkezi",
+                      () {
+                        Navigator.pop(ctx);
+                        Future.delayed(const Duration(milliseconds: 380), () {
+                          if (!mounted) return;
+                          _showHelpAndSupportSheet();
+                        });
+                      },
+                      subtitle: "Yardım, rehber ve iletişim",
+                    ),
+                    _buildSettingsItem(
                       Icons.logout_rounded,
                       "Çıkış Yap",
                       () async {
@@ -3944,19 +3956,6 @@ class _HomeViewState extends State<HomeView> {
                         }
                       },
                       color: Colors.red,
-                    ),
-                    _buildSettingsItem(
-                      Icons.support_agent_rounded,
-                      "Hakkında ve Destek",
-                      () async {
-                        Navigator.pop(ctx);
-                        await Future.delayed(
-                          const Duration(milliseconds: 220),
-                        );
-                        if (!mounted) return;
-                        _showHelpAndSupportSheet();
-                      },
-                      subtitle: "İletişim bilgileri",
                     ),
                   ]),
                 ],
@@ -3987,6 +3986,7 @@ class _HomeViewState extends State<HomeView> {
   void _showHelpAndSupportSheet() {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) {
