@@ -273,9 +273,7 @@ class _HomeViewState extends State<HomeView> {
     "Tıp Fakültesi",
     "Veterinerlik Fakültesi",
   ];
-  final List<String> courses = [
-    "Hepsi",
-  ];
+  final List<String> courses = ["Hepsi"];
   // Bildirimler her zaman açık
 
   StreamSubscription? _banSubscription;
@@ -4052,8 +4050,7 @@ class _HomeViewState extends State<HomeView> {
       _buildGuideStepItem(
         icon: Icons.add_circle_rounded,
         title: "Paylaşım Ekle",
-        description:
-            "Not veya gönderi paylaşmak için ekleme alanını kullan.",
+        description: "Not veya gönderi paylaşmak için ekleme alanını kullan.",
       ),
       _buildGuideStepItem(
         icon: Icons.chat_bubble_rounded,
