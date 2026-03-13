@@ -2893,7 +2893,7 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        '$toolTitle premium araci',
+                        '$toolTitle premium aracı',
                         style: TextStyle(
                           color: AppColors.textHeader,
                           fontSize: 18,
@@ -2905,7 +2905,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  'Bu araci kullanmak icin premium plan gerekiyor. Premium ile mavi tik, PDF ozeti ve yeni AI ozellikleri acilir.',
+                  'Bu aracı kullanmak için premium plan gerekiyor. Premium ile mavi tik, PDF özeti ve yeni AI özellikleri açılır.',
                   style: TextStyle(
                     color: AppColors.textBody,
                     fontSize: 13,
@@ -3670,8 +3670,8 @@ class _HomeViewState extends State<HomeView> {
                 const SizedBox(height: 4),
                 Text(
                   isPremium
-                      ? 'Mavi tik tanimlandi. Profil ziyaretcilerinin tamami ve premium altyapin hazir.'
-                      : 'Premium ile mavi tik al, tum profil ziyaretcilerini gor ve ileride gelecek ekstra ozellikleri ac.',
+                      ? 'Mavi tik tanımlandı. Profil ziyaretçilerinin tamamı ve premium altyapın hazır.'
+                      : 'Premium ile mavi tik al, tüm profil ziyaretçilerini gör ve ileride gelecek ekstra özellikleri aç.',
                   style: TextStyle(
                     color: isPremium
                         ? Colors.white.withValues(alpha: 0.88)
@@ -3698,7 +3698,7 @@ class _HomeViewState extends State<HomeView> {
               elevation: 0,
             ),
             child: Text(
-              isPremium ? 'Yonet' : 'Al',
+              isPremium ? 'Yönet' : 'Al',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -5569,7 +5569,7 @@ class _HomeViewState extends State<HomeView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Premium ile tumunu gor',
+                              'Premium ile tümünü gör',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -5578,7 +5578,7 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Premium alarak mavi tik kazan ve tum ziyaretcileri ac.',
+                              'Premium alarak mavi tik kazan ve tüm ziyaretçileri aç.',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.textBody,
