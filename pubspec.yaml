@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.3.4
   firebase_messaging: ^16.1.1
   flutter_local_notifications: ^18.0.1
+  in_app_purchase: ^3.2.3
   google_fonts: ^8.0.2
   flutter_svg: ^2.0.10+1
   font_awesome_flutter: ^10.11.0
