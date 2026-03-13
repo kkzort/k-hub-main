@@ -146,7 +146,7 @@ class KBotService {
 
   String buildDocumentSummaryMessage(KBotDocumentAnalysis analysis) {
     final buffer = StringBuffer()
-      ..writeln('${analysis.sourceLabel} hazir: ${analysis.fileName}')
+      ..writeln('${analysis.sourceLabel} hazır: ${analysis.fileName}')
       ..writeln();
 
     if (analysis.isPdf) {
