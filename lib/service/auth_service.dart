@@ -41,10 +41,7 @@ class AuthService {
       if (!snapshot.exists || snapshot.data() == null) return null;
       final data = snapshot.data() as Map<String, dynamic>;
       if (data['isBanned'] != true) return null;
-      return {
-        'isBanned': true,
-        'banReason': data['banReason'] ?? '',
-      };
+      return {'isBanned': true, 'banReason': data['banReason'] ?? ''};
     });
   }
 
@@ -121,13 +118,12 @@ class AuthService {
       }
 
       final role = await getUserRole(uid);
-      return {
-        'status': 'success',
-        'role': role,
-      };
+      return {'status': 'success', 'role': role};
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
-        debugPrint('[Auth] FirebaseAuthException: code=${e.code} message=${e.message}');
+        debugPrint(
+          '[Auth] FirebaseAuthException: code=${e.code} message=${e.message}',
+        );
       }
       String turkceHata;
       switch (e.code) {
@@ -144,26 +140,22 @@ class AuthService {
           turkceHata = 'Bu hesap devre dışı bırakılmış.';
           break;
         case 'too-many-requests':
-          turkceHata = 'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
+          turkceHata =
+              'Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin.';
           break;
         case 'invalid-credential':
-          turkceHata = 'Geçersiz kimlik bilgileri. E-posta ve şifrenizi kontrol edin.';
+          turkceHata =
+              'Geçersiz kimlik bilgileri. E-posta ve şifrenizi kontrol edin.';
           break;
         default:
           turkceHata = e.message ?? 'Giriş sırasında bir hata oluştu.';
       }
-      return {
-        'status': 'error',
-        'message': turkceHata,
-      };
+      return {'status': 'error', 'message': turkceHata};
     } catch (e) {
       if (kDebugMode) {
         debugPrint('[Auth] Unexpected error: $e');
       }
-      return {
-        'status': 'error',
-        'message': 'Beklenmeyen bir hata oluştu: $e',
-      };
+      return {'status': 'error', 'message': 'Beklenmeyen bir hata oluştu: $e'};
     }
   }
 
@@ -191,8 +183,10 @@ class AuthService {
       }
 
       final uid = userCredential.user!.uid;
-      final docUrl =
-          await storageService.uploadVerificationDocument(selectedFile, uid);
+      final docUrl = await storageService.uploadVerificationDocument(
+        selectedFile,
+        uid,
+      );
 
       if (docUrl == null) {
         throw 'Belge yükleme aşamasında bir sorun oluştu.';
@@ -213,7 +207,9 @@ class AuthService {
       return 'success';
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
-        debugPrint('[Auth] Register FirebaseAuthException: code=${e.code} message=${e.message}');
+        debugPrint(
+          '[Auth] Register FirebaseAuthException: code=${e.code} message=${e.message}',
+        );
       }
       String turkceHata;
       switch (e.code) {

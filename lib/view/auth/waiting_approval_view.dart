@@ -33,12 +33,16 @@ class _WaitingApprovalViewState extends State<WaitingApprovalView> {
 
   void _listenBanStatus() {
     if (currentUser == null) return;
-    _banSubscription = authService.banStatusStream(currentUser!.uid).listen((banInfo) {
+    _banSubscription = authService.banStatusStream(currentUser!.uid).listen((
+      banInfo,
+    ) {
       if (banInfo != null && mounted) {
         authService.signOut();
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => BannedView(banReason: banInfo['banReason'])),
+          MaterialPageRoute(
+            builder: (_) => BannedView(banReason: banInfo['banReason']),
+          ),
           (route) => false,
         );
       }

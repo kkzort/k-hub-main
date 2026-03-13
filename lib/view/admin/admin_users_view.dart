@@ -15,7 +15,8 @@ class _AdminUsersViewState extends State<AdminUsersView> {
 
   Future<void> _changeUserRole(String uid, String currentRole) async {
     final newRole = currentRole == 'admin' ? 'student' : 'admin';
-    final confirm = await showDialog<bool>(
+    final confirm =
+        await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Yetki Değişikliği'),
@@ -55,7 +56,9 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     });
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(isApproved ? 'Onay kaldırıldı.' : 'Kullanıcı onaylandı.')),
+      SnackBar(
+        content: Text(isApproved ? 'Onay kaldırıldı.' : 'Kullanıcı onaylandı.'),
+      ),
     );
   }
 
@@ -77,14 +80,18 @@ class _AdminUsersViewState extends State<AdminUsersView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Bu kullanıcının hesabını askıya almak istediğinize emin misiniz?'),
+              const Text(
+                'Bu kullanıcının hesabını askıya almak istediğinize emin misiniz?',
+              ),
               const SizedBox(height: 16),
               TextField(
                 controller: reasonController,
                 decoration: InputDecoration(
                   labelText: 'Ban Nedeni',
                   hintText: 'Örn: Uygunsuz içerik paylaşımı',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   filled: true,
                   fillColor: AppColors.surfaceSecondary,
                 ),
@@ -98,9 +105,12 @@ class _AdminUsersViewState extends State<AdminUsersView> {
               child: const Text('İptal'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, reasonController.text.trim().isEmpty
-                  ? 'Yönetici tarafından askıya alındı'
-                  : reasonController.text.trim()),
+              onPressed: () => Navigator.pop(
+                context,
+                reasonController.text.trim().isEmpty
+                    ? 'Yönetici tarafından askıya alındı'
+                    : reasonController.text.trim(),
+              ),
               child: const Text('Banla', style: TextStyle(color: Colors.red)),
             ),
           ],
@@ -116,16 +126,19 @@ class _AdminUsersViewState extends State<AdminUsersView> {
       });
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$userName banlandı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$userName banlandı.')));
     } else {
       // Ban kaldırma onayı
-      final confirm = await showDialog<bool>(
+      final confirm =
+          await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Ban Kaldır'),
-              content: Text('$userName kullanıcısının banını kaldırmak istiyor musunuz?'),
+              content: Text(
+                '$userName kullanıcısının banını kaldırmak istiyor musunuz?',
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
@@ -155,9 +168,14 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     }
   }
 
-  Future<void> _toggleVerified(String uid, bool currentlyVerified, String userName) async {
+  Future<void> _toggleVerified(
+    String uid,
+    bool currentlyVerified,
+    String userName,
+  ) async {
     final willVerify = !currentlyVerified;
-    final confirm = await showDialog<bool>(
+    final confirm =
+        await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: Text(willVerify ? 'Mavi Tik Ver' : 'Mavi Tik Kaldır'),
@@ -184,28 +202,36 @@ class _AdminUsersViewState extends State<AdminUsersView> {
 
     await _firestore.collection('users').doc(uid).update({
       'isVerified': willVerify,
-      'verifiedAt': willVerify ? FieldValue.serverTimestamp() : FieldValue.delete(),
+      'verifiedAt': willVerify
+          ? FieldValue.serverTimestamp()
+          : FieldValue.delete(),
     });
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(willVerify ? '$userName mavi tik aldı ✓' : '$userName mavi tik kaldırıldı')),
+      SnackBar(
+        content: Text(
+          willVerify
+              ? '$userName mavi tik aldı ✓'
+              : '$userName mavi tik kaldırıldı',
+        ),
+      ),
     );
   }
 
   Future<void> _viewDocument(String? url) async {
     if (url == null || url.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Belge bulunamadı.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Belge bulunamadı.')));
       }
       return;
     }
 
     if (!await launchUrl(Uri.parse(url)) && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Belge açılamadı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Belge açılamadı.')));
     }
   }
 
@@ -214,7 +240,10 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Kullanıcı Yönetimi', style: TextStyle(color: AppColors.textHeader)),
+        title: Text(
+          'Kullanıcı Yönetimi',
+          style: TextStyle(color: AppColors.textHeader),
+        ),
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textHeader,
         iconTheme: IconThemeData(color: AppColors.textHeader),
@@ -267,19 +296,25 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                     backgroundColor: isBanned
                         ? Colors.red[100]
                         : (isAdmin
-                            ? Colors.red[100]
-                            : (isApproved ? Colors.blue[100] : Colors.amber[100])),
+                              ? Colors.red[100]
+                              : (isApproved
+                                    ? Colors.blue[100]
+                                    : Colors.amber[100])),
                     child: Icon(
                       isBanned
                           ? Icons.block
                           : (isAdmin
-                              ? Icons.admin_panel_settings
-                              : (isApproved ? Icons.person : Icons.pending_actions)),
+                                ? Icons.admin_panel_settings
+                                : (isApproved
+                                      ? Icons.person
+                                      : Icons.pending_actions)),
                       color: isBanned
                           ? Colors.red
                           : (isAdmin
-                              ? Colors.red
-                              : (isApproved ? Colors.blue : Colors.amber[900])),
+                                ? Colors.red
+                                : (isApproved
+                                      ? Colors.blue
+                                      : Colors.amber[900])),
                     ),
                   ),
                   title: Row(
@@ -287,7 +322,10 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                       Expanded(
                         child: Text(
                           name,
-                          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textHeader),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textHeader,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -295,7 +333,10 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                       if (isBanned && !isAdmin)
                         Container(
                           margin: const EdgeInsets.only(left: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(4),
@@ -312,7 +353,10 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                       else if (!isApproved && !isAdmin)
                         Container(
                           margin: const EdgeInsets.only(left: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.amber,
                             borderRadius: BorderRadius.circular(4),
@@ -328,19 +372,27 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                         ),
                     ],
                   ),
-                  subtitle: Text('Email: $email\nRol: ${role.toUpperCase()}', style: TextStyle(color: AppColors.textBody)),
+                  subtitle: Text(
+                    'Email: $email\nRol: ${role.toUpperCase()}',
+                    style: TextStyle(color: AppColors.textBody),
+                  ),
                   isThreeLine: true,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (!isAdmin) ...[
                         IconButton(
-                          tooltip: isVerified ? 'Mavi Tik Kaldır' : 'Mavi Tik Ver',
+                          tooltip: isVerified
+                              ? 'Mavi Tik Kaldır'
+                              : 'Mavi Tik Ver',
                           icon: Icon(
                             Icons.verified,
-                            color: isVerified ? const Color(0xFF1DA1F2) : Colors.grey[400],
+                            color: isVerified
+                                ? const Color(0xFF1DA1F2)
+                                : Colors.grey[400],
                           ),
-                          onPressed: () => _toggleVerified(uid, isVerified, name.toString()),
+                          onPressed: () =>
+                              _toggleVerified(uid, isVerified, name.toString()),
                         ),
                         IconButton(
                           tooltip: 'Belgeyi Görüntüle',
@@ -353,7 +405,9 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                         IconButton(
                           tooltip: isApproved ? 'Onayı Kaldır' : 'Onayla',
                           icon: Icon(
-                            isApproved ? Icons.cancel_outlined : Icons.check_circle_outline,
+                            isApproved
+                                ? Icons.cancel_outlined
+                                : Icons.check_circle_outline,
                             color: isApproved ? Colors.red : Colors.green,
                           ),
                           onPressed: () => _approveUser(uid, isApproved),

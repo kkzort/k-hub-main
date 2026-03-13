@@ -348,7 +348,10 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Duyuru & Fırsat Yönetimi", style: TextStyle(color: AppColors.textHeader)),
+        title: Text(
+          "Duyuru & Fırsat Yönetimi",
+          style: TextStyle(color: AppColors.textHeader),
+        ),
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textHeader,
         iconTheme: IconThemeData(color: AppColors.textHeader),
@@ -397,7 +400,10 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                         ? const Icon(Icons.image)
                         : null,
                   ),
-                  title: Text(item['title'] ?? 'İsimsiz', style: TextStyle(color: AppColors.textHeader)),
+                  title: Text(
+                    item['title'] ?? 'İsimsiz',
+                    style: TextStyle(color: AppColors.textHeader),
+                  ),
                   subtitle: Text(
                     "Tür: $typeStr\nDurum: ${isActive ? 'Yayında' : 'Gizli'}",
                     style: TextStyle(color: AppColors.textBody),
@@ -418,14 +424,22 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.edit, color: AppColors.primary, size: 20),
+                          icon: Icon(
+                            Icons.edit,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                           onPressed: () =>
                               _showAddAnnouncementDialog(items[index]),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 36),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 20,
+                          ),
                           onPressed: () => _deleteAnnouncement(items[index].id),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 36),

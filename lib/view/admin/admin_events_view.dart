@@ -361,7 +361,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-                child: const Text('Hayır'),
+            child: const Text('Hayır'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),

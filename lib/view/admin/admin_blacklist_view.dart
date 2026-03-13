@@ -13,15 +13,15 @@ class AdminBlacklistView extends StatefulWidget {
 class _AdminBlacklistViewState extends State<AdminBlacklistView> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> _unbanUser({
-    required String uid,
-    required String name,
-  }) async {
-    final confirm = await showDialog<bool>(
+  Future<void> _unbanUser({required String uid, required String name}) async {
+    final confirm =
+        await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Ban Kaldır'),
-            content: Text('$name kullanıcısının banını kaldırmak istiyor musunuz?'),
+            content: Text(
+              '$name kullanıcısının banını kaldırmak istiyor musunuz?',
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -45,9 +45,9 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
     });
 
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$name ban listesinden çıkarıldı.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$name ban listesinden çıkarıldı.')));
   }
 
   String _formatDate(dynamic value) {
@@ -88,9 +88,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
           }).toList();
 
           if (bannedUsers.isEmpty) {
-            return const Center(
-              child: Text('Banlı kullanıcı bulunmuyor.'),
-            );
+            return const Center(child: Text('Banlı kullanıcı bulunmuyor.'));
           }
 
           return ListView.separated(
@@ -103,7 +101,8 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
               final name = (data['name'] ?? 'Bilinmiyor').toString();
               final email = (data['email'] ?? 'Bilinmiyor').toString();
               final banReason =
-                  (data['banReason'] ?? 'Yönetici tarafından banlandı').toString();
+                  (data['banReason'] ?? 'Yönetici tarafından banlandı')
+                      .toString();
               final bannedAt = data['bannedAt'];
 
               return Card(
@@ -120,7 +119,10 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
                   ),
                   title: Text(
                     name,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textHeader),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textHeader,
+                    ),
                   ),
                   subtitle: Text(
                     'Email: $email\nSebep: $banReason\nTarih: ${_formatDate(bannedAt)}',
