@@ -501,7 +501,7 @@ class EventCalendarView extends StatelessWidget {
                                         top: 14,
                                         right: 14,
                                         child: _BadgeChip(
-                                          label: 'BUGUN',
+                                          label: 'BUGÜN',
                                           color: kPrimaryColor,
                                           textColor: Colors.white,
                                         ),
