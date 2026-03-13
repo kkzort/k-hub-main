@@ -5786,10 +5786,7 @@ class _HomeViewState extends State<HomeView> {
 
   // ─── Başka bir kullanıcının profilini göster ───
   void _showUserProfileBottomSheet(String userIdentifier) async {
-    Future<Map<String, dynamic>?> findByField(
-      String field,
-      String value,
-    ) async {
+    Future<String?> findUserIdByField(String field, String value) async {
       if (value.trim().isEmpty) return null;
       final snap = await FirebaseFirestore.instance
           .collection('users')
@@ -5797,194 +5794,25 @@ class _HomeViewState extends State<HomeView> {
           .limit(1)
           .get();
       if (snap.docs.isEmpty) return null;
-      return snap.docs.first.data();
+      return snap.docs.first.id;
     }
 
-    Map<String, dynamic>? data;
-    data = await findByField('email', userIdentifier);
-    data ??= await findByField('nick', userIdentifier);
-    data ??= await findByField('name', userIdentifier);
+    String? userId;
+    userId = await findUserIdByField('email', userIdentifier);
+    userId ??= await findUserIdByField('nick', userIdentifier);
+    userId ??= await findUserIdByField('name', userIdentifier);
 
     if (!mounted) return;
-
-    final String displayName = (data?['nick']?.toString().isNotEmpty == true)
-        ? data!['nick'].toString()
-        : (data?['name']?.toString().isNotEmpty == true)
-        ? data!['name'].toString()
-        : userIdentifier;
-    final String bio = data?['bio']?.toString() ?? "";
-    final int avatarIdx = (data?['avatarIndex'] is int)
-        ? data!['avatarIndex']
-        : 0;
-    final Map<String, dynamic> socialLinks = _safeStringDynamicMap(
-      data?['socialLinks'],
-    );
-    final String? photoUrl = data?['photoUrl'];
-    final String roleRaw = (data?['role'] ?? 'student')
-        .toString()
-        .toLowerCase();
-    final String roleLabel = roleRaw == 'admin' ? 'Admin' : 'Öğrenci';
-    final String profileEmail = (data?['email'] ?? '').toString();
-    int notesCount = 0;
-    int totalLikes = 0;
-
-    QuerySnapshot<Map<String, dynamic>> notesSnapshot;
-    if (profileEmail.isNotEmpty) {
-      notesSnapshot = await FirebaseFirestore.instance
-          .collection('notes')
-          .where('userEmail', isEqualTo: profileEmail)
-          .get();
-    } else {
-      notesSnapshot = await FirebaseFirestore.instance
-          .collection('notes')
-          .where('userName', isEqualTo: displayName)
-          .get();
-    }
-    notesCount = notesSnapshot.docs.length;
-    for (final doc in notesSnapshot.docs) {
-      final likesVal = doc.data()['likes'];
-      if (likesVal is int) {
-        totalLikes += likesVal;
-      } else if (likesVal is num) {
-        totalLikes += likesVal.toInt();
-      }
+    if (userId == null || userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kullanıcı profili bulunamadı.')),
+      );
+      return;
     }
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(ctx).size.height * 0.7,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-                child: Column(
-                  children: [
-                    // Avatar
-                    CircleAvatar(
-                      radius: 44,
-                      backgroundColor: AppColors.primary.withValues(
-                        alpha: 0.12,
-                      ),
-                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
-                          ? NetworkImage(photoUrl)
-                          : null,
-                      child: (photoUrl == null || photoUrl.isEmpty)
-                          ? Icon(
-                              avatarIcons[avatarIdx.clamp(
-                                0,
-                                avatarIcons.length - 1,
-                              )],
-                              size: 44,
-                              color: AppColors.primary,
-                            )
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    // Name
-                    Text(
-                      displayName,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textHeader,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildProfileStatTile(
-                            'Toplam Beğeni',
-                            '$totalLikes',
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildProfileStatTile(
-                            'Paylaşılan Not',
-                            '$notesCount',
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildProfileStatTile('Rol', roleLabel),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    // Bio
-                    if (bio.isNotEmpty) ...[
-                      _buildBioCard(bio),
-                      const SizedBox(height: 20),
-                    ],
-                    // Social Media Icons
-                    if (_hasSocialLinks(socialLinks)) ...[
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (final platform in const [
-                              'instagram',
-                              'linkedin',
-                              'x',
-                              'tiktok',
-                              'snapchat',
-                              'facebook',
-                            ])
-                              if (_socialValue(
-                                socialLinks,
-                                platform,
-                              ).isNotEmpty)
-                                _buildSocialIcon(
-                                  platform,
-                                  _buildSocialUrl(
-                                    _socialValue(socialLinks, platform),
-                                    platform,
-                                  ),
-                                ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => UserProfileView(userId: userId!)),
     );
   }
 
