@@ -99,13 +99,14 @@ class EventCalendarView extends StatelessWidget {
         : displayName.isNotEmpty
         ? displayName
         : (user.email?.split('@').first ?? 'Kullanıcı');
+    final eventTitle = _stringValue(eventData, 'title');
 
     await FirebaseFirestore.instance
         .collection('event_preregistrations')
         .doc(_registrationDocId(eventId, user.uid))
         .set({
           'eventId': eventId,
-          'eventTitle': _stringValue(eventData, 'title'),
+          'eventTitle': eventTitle,
           'eventLocation': _stringValue(eventData, 'location'),
           'eventImageUrl': _stringValue(eventData, 'imageUrl'),
           'eventDate': _timestampValue(eventData, 'eventDate'),
@@ -121,7 +122,7 @@ class EventCalendarView extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${_stringValue(eventData, 'title').isNotEmpty ? _stringValue(eventData, 'title') : 'Etkinlik'} için ön kaydın alındı.',
+          '${eventTitle.isNotEmpty ? eventTitle : 'Etkinlik'} için ön kaydın alındı.',
         ),
       ),
     );
