@@ -7443,7 +7443,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 width: radius * 2,
                 height: radius * 2,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
+                errorBuilder: (context, error, stackTrace) =>
                     Icon(Icons.person, color: AppColors.textTertiary),
               ),
             ),
