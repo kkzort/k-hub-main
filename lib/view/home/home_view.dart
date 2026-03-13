@@ -7015,22 +7015,24 @@ class LeaderboardView extends StatefulWidget {
 }
 
 class _LeaderboardViewState extends State<LeaderboardView> {
-  String selectedFilter = 'Haftalık';
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.textHeader),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           "Liderlik Tablosu",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.textHeader,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -7070,65 +7072,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
           return Column(
             children: [
-              // Filters
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Row(
-                    children: ['Haftalık', 'Aylık', 'Tüm Zamanlar'].map((
-                      filter,
-                    ) {
-                      bool isSelected = selectedFilter == filter;
-                      return Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => selectedFilter = filter),
-                          child: Container(
-                            margin: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.05,
-                                        ),
-                                        blurRadius: 4,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ]
-                                  : [],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              filter,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? Colors.red.shade700
-                                    : Colors.grey.shade600,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.w600,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               Expanded(
                 child: sortedUsers.isEmpty
@@ -7145,7 +7089,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                                 child: Text(
                                   "SIRALAMA",
                                   style: TextStyle(
-                                    color: Color(0xFF6A7A9C),
+                                    color: AppColors.textBody,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                     letterSpacing: 1.2,
@@ -7317,10 +7261,10 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               ),
               child: CircleAvatar(
                 radius: avatarSize / 2,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: AppColors.surfaceSecondary,
                 backgroundImage: image != null ? NetworkImage(image) : null,
                 child: image == null
-                    ? Icon(Icons.person, color: Colors.grey)
+                    ? Icon(Icons.person, color: AppColors.textTertiary)
                     : null,
               ),
             ),
@@ -7334,7 +7278,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                   decoration: BoxDecoration(
                     color: borderColor,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: AppColors.surface, width: 2),
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -7356,7 +7300,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                   decoration: BoxDecoration(
                     color: borderColor,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: AppColors.surface, width: 2),
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -7374,7 +7318,11 @@ class _LeaderboardViewState extends State<LeaderboardView> {
         SizedBox(height: 12),
         Text(
           nameObj,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: AppColors.textHeader,
+          ),
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -7417,15 +7365,25 @@ class _LeaderboardViewState extends State<LeaderboardView> {
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isCurrentUser ? Colors.red.shade50 : Colors.white,
+            color: isCurrentUser
+                ? (AppColors.isDark
+                      ? AppColors.error.withValues(alpha: 0.16)
+                      : Colors.red.shade50)
+                : AppColors.surface,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: isCurrentUser ? Colors.red.shade200 : Colors.grey.shade100,
+              color: isCurrentUser
+                  ? (AppColors.isDark
+                        ? AppColors.error.withValues(alpha: 0.45)
+                        : Colors.red.shade200)
+                  : AppColors.border,
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: AppColors.shadow.withValues(
+                  alpha: AppColors.isDark ? 0.35 : 0.04,
+                ),
                 blurRadius: 10,
                 offset: Offset(0, 4),
               ),
@@ -7438,9 +7396,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 child: Text(
                   "${i + 1}",
                   style: TextStyle(
-                    color: isCurrentUser
-                        ? Colors.red.shade700
-                        : Color(0xFF6A7A9C),
+                    color: isCurrentUser ? AppColors.error : AppColors.textBody,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -7450,12 +7406,12 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               SizedBox(width: 12),
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: AppColors.surfaceSecondary,
                 backgroundImage: images[user.key] != null
                     ? NetworkImage(images[user.key]!)
                     : null,
                 child: images[user.key] == null
-                    ? Icon(Icons.person, color: Colors.grey)
+                    ? Icon(Icons.person, color: AppColors.textTertiary)
                     : null,
               ),
               SizedBox(width: 16),
@@ -7468,14 +7424,14 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: isCurrentUser ? Colors.black : Colors.black87,
+                        color: AppColors.textHeader,
                       ),
                     ),
                     SizedBox(height: 2),
                     Text(
                       dept.toUpperCase(),
                       style: TextStyle(
-                        color: Color(0xFF6A7A9C),
+                        color: AppColors.textBody,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
