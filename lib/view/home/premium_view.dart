@@ -494,7 +494,7 @@ class _PremiumViewState extends State<PremiumView> {
                           : _isStoreLoading
                           ? 'Mağaza hazırlanıyor...'
                           : !_storeAvailable
-                          ? 'Magaza kullanılamıyor'
+                          ? 'Mağaza kullanılamıyor'
                           : 'Premiumu satın al',
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
