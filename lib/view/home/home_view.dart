@@ -5828,15 +5828,6 @@ class _HomeViewState extends State<HomeView> {
         _socialValue(m, 'facebook').isNotEmpty;
   }
 
-  bool _hasSocialLinks(Map<String, dynamic> links) {
-    return _socialValue(links, 'instagram').isNotEmpty ||
-        _socialValue(links, 'linkedin').isNotEmpty ||
-        _socialValue(links, 'x').isNotEmpty ||
-        _socialValue(links, 'tiktok').isNotEmpty ||
-        _socialValue(links, 'snapchat').isNotEmpty ||
-        _socialValue(links, 'facebook').isNotEmpty;
-  }
-
   String _socialValue(dynamic links, String platform) {
     if (links == null || links is! Map) return '';
     final map = Map<String, dynamic>.from(links);
@@ -5917,58 +5908,6 @@ class _HomeViewState extends State<HomeView> {
       default:
         return handle;
     }
-  }
-
-  Widget _buildProfileStatTile(String title, String value) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.textHeader,
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: AppColors.textBody,
-              fontWeight: FontWeight.w600,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBioCard(String bio) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Text(
-        bio,
-        style: TextStyle(
-          fontSize: 14,
-          color: AppColors.textBody,
-          height: 1.55,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
   }
 
   Widget _buildSocialIcon(String platform, String url) {
