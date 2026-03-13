@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../../core/style/app_colors.dart';
 import '../../core/widgets/verified_badge.dart';
@@ -13,42 +17,233 @@ class PremiumView extends StatefulWidget {
 }
 
 class _PremiumViewState extends State<PremiumView> {
-  bool _isActivating = false;
+  static const String _premiumMonthlyProductId = 'khub_premium_monthly';
+
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  final Set<String> _processedPurchases = <String>{};
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
+  bool _storeAvailable = false;
+  bool _isStoreLoading = true;
+  bool _isPurchasing = false;
+  String? _storeError;
+  List<ProductDetails> _products = const <ProductDetails>[];
 
   User? get _currentUser => FirebaseAuth.instance.currentUser;
 
-  Future<void> _activatePremium() async {
-    final user = _currentUser;
-    if (user == null || _isActivating) return;
+  ProductDetails? get _premiumProduct {
+    for (final product in _products) {
+      if (product.id == _premiumMonthlyProductId) return product;
+    }
+    return null;
+  }
 
-    setState(() => _isActivating = true);
+  @override
+  void initState() {
+    super.initState();
+    _purchaseSub = _inAppPurchase.purchaseStream.listen(
+      _handlePurchaseUpdates,
+      onError: (_) {
+        if (!mounted) return;
+        setState(() {
+          _isPurchasing = false;
+          _storeError = 'Satın alma akışı sırasında bir hata oluştu.';
+        });
+      },
+    );
+    _loadStoreProducts();
+  }
+
+  @override
+  void dispose() {
+    _purchaseSub?.cancel();
+    super.dispose();
+  }
+
+  void _showMessage(String message, {bool isError = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : null,
+      ),
+    );
+  }
+
+  Future<void> _loadStoreProducts() async {
+    setState(() {
+      _isStoreLoading = true;
+      _storeError = null;
+    });
+
+    final available = await _inAppPurchase.isAvailable();
+    if (!mounted) return;
+    if (!available) {
+      setState(() {
+        _storeAvailable = false;
+        _isStoreLoading = false;
+        _storeError = 'App Store / Play Store kullanılamıyor.';
+      });
+      return;
+    }
+
+    final response = await _inAppPurchase.queryProductDetails({
+      _premiumMonthlyProductId,
+    });
+    if (!mounted) return;
+
+    if (response.error != null) {
+      setState(() {
+        _storeAvailable = true;
+        _isStoreLoading = false;
+        _storeError = response.error!.message;
+        _products = const <ProductDetails>[];
+      });
+      return;
+    }
+
+    String? productError;
+    if (response.notFoundIDs.contains(_premiumMonthlyProductId)) {
+      productError =
+          'Premium ürünü mağazada bulunamadı. Ürün kimliğini kontrol et.';
+    }
+
+    setState(() {
+      _storeAvailable = true;
+      _isStoreLoading = false;
+      _products = response.productDetails;
+      _storeError = productError;
+    });
+  }
+
+  String _storeSource() {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+        return 'app_store';
+      case TargetPlatform.android:
+        return 'play_store';
+      default:
+        return 'store_unknown';
+    }
+  }
+
+  Future<bool> _activatePremiumFromPurchase(PurchaseDetails purchase) async {
+    final user = _currentUser;
+    if (user == null) return false;
+
     try {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'isPremium': true,
         'premiumStatus': 'active',
-        'premiumPlan': 'student_monthly',
-        'premiumSource': 'app_manual',
+        'premiumPlan': purchase.productID,
+        'premiumSource': _storeSource(),
+        'premiumPurchaseId': purchase.purchaseID,
+        'premiumProductId': purchase.productID,
+        'premiumTransactionDate': purchase.transactionDate,
+        'premiumLastVerification': 'client_pending_backend_verification',
         'premiumActivatedAt': FieldValue.serverTimestamp(),
         'premiumUpdatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Premium aktif edildi. Mavi tik hesabina tanimlandi.'),
-        ),
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _handlePurchaseUpdates(
+    List<PurchaseDetails> purchaseDetailsList,
+  ) async {
+    var hasPending = false;
+
+    for (final purchase in purchaseDetailsList) {
+      final purchaseKey =
+          purchase.purchaseID ??
+          '${purchase.productID}_${purchase.transactionDate ?? ''}';
+
+      if (purchase.status == PurchaseStatus.pending) {
+        hasPending = true;
+      } else if (purchase.status == PurchaseStatus.error) {
+        _showMessage(
+          purchase.error?.message ?? 'Satın alma başarısız oldu.',
+          isError: true,
+        );
+      } else if (purchase.status == PurchaseStatus.purchased ||
+          purchase.status == PurchaseStatus.restored) {
+        if (!_processedPurchases.contains(purchaseKey)) {
+          _processedPurchases.add(purchaseKey);
+          final activated = await _activatePremiumFromPurchase(purchase);
+          if (activated) {
+            _showMessage(
+              'Premium aktif edildi. Satın alma kaydın işlendi.',
+            );
+          } else {
+            _showMessage(
+              'Satın alma alındı fakat premium yazılamadı. Tekrar dene.',
+              isError: true,
+            );
+          }
+        }
+      }
+
+      if (purchase.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(purchase);
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _isPurchasing = hasPending;
+    });
+  }
+
+  Future<void> _buyPremium() async {
+    final product = _premiumProduct;
+    if (!_storeAvailable) {
+      _showMessage('Mağaza şu anda kullanılamıyor.', isError: true);
+      return;
+    }
+    if (product == null) {
+      _showMessage(
+        'Premium ürünü bulunamadı. Ürün kimliğini kontrol et.',
+        isError: true,
       );
+      return;
+    }
+    if (_isPurchasing) return;
+
+    setState(() {
+      _isPurchasing = true;
+      _storeError = null;
+    });
+
+    final purchaseParam = PurchaseParam(productDetails: product);
+    try {
+      final started = await _inAppPurchase.buyNonConsumable(
+        purchaseParam: purchaseParam,
+      );
+      if (!started) {
+        if (!mounted) return;
+        setState(() => _isPurchasing = false);
+        _showMessage('Satın alma başlatılamadı.', isError: true);
+      }
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Premium aktif edilirken bir hata olustu.'),
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isActivating = false);
-      }
+      setState(() => _isPurchasing = false);
+      _showMessage('Satın alma sırasında hata oluştu.', isError: true);
+    }
+  }
+
+  Future<void> _restorePremium() async {
+    if (_isPurchasing) return;
+    try {
+      setState(() => _isPurchasing = true);
+      await _inAppPurchase.restorePurchases();
+      _showMessage('Satın alımların geri yükleniyor...');
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isPurchasing = false);
+      _showMessage('Geri yükleme başlatılamadı.', isError: true);
     }
   }
 
@@ -82,6 +277,9 @@ class _PremiumViewState extends State<PremiumView> {
         final isPremium =
             userData?['isPremium'] == true ||
             userData?['premiumStatus'] == 'active';
+        final planPrice =
+            _premiumProduct?.price ??
+            (_isStoreLoading ? 'Fiyat yukleniyor...' : 'Magaza fiyatı yok');
         final activatedAt = userData?['premiumActivatedAt'] as Timestamp?;
         final activatedText = activatedAt == null
             ? 'Henüz aktif değil'
@@ -183,7 +381,7 @@ class _PremiumViewState extends State<PremiumView> {
                       Row(
                         children: [
                           Text(
-                            '49,99 TL / ay',
+                            '$planPrice / ay',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.96),
                               fontSize: 20,
@@ -261,9 +459,13 @@ class _PremiumViewState extends State<PremiumView> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: (isPremium || _isActivating)
+                    onPressed:
+                        (isPremium ||
+                            _isPurchasing ||
+                            _isStoreLoading ||
+                            !_storeAvailable)
                         ? null
-                        : _activatePremium,
+                        : _buyPremium,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1DA1F2),
                       foregroundColor: Colors.white,
@@ -275,9 +477,13 @@ class _PremiumViewState extends State<PremiumView> {
                     child: Text(
                       isPremium
                           ? 'Premium zaten aktif'
-                          : _isActivating
-                          ? 'Aktif ediliyor...'
-                          : 'Premiumu baslat',
+                          : _isPurchasing
+                          ? 'Satın alma isleniyor...'
+                          : _isStoreLoading
+                          ? 'Magaza hazirlaniyor...'
+                          : !_storeAvailable
+                          ? 'Magaza kullanılamıyor'
+                          : 'Premiumu satin al',
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,
@@ -286,8 +492,26 @@ class _PremiumViewState extends State<PremiumView> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: _isPurchasing ? null : _restorePremium,
+                    child: const Text('Satın alımları geri yükle'),
+                  ),
+                ),
+                if (_storeError != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _storeError!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
                 Text(
-                  'Not: Odeme entegrasyonu sonraki adimda App Store / Play Store satin alma altyapisina baglanabilir. Bu ekran premium durumunu simdiden hazirlar.',
+                  'Not: Mağaza ürün kimliği "khub_premium_monthly" olarak beklenir. Üretimde satın alma fişi backend tarafında doğrulanmalıdır.',
                   style: TextStyle(
                     color: AppColors.textTertiary,
                     fontSize: 12,
