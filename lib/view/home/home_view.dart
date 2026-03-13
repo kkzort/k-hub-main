@@ -7232,13 +7232,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 shape: BoxShape.circle,
                 border: Border.all(color: borderColor, width: 4),
               ),
-              child: CircleAvatar(
+              child: _buildLeaderboardAvatar(
+                imageUrl: image,
                 radius: avatarSize / 2,
-                backgroundColor: AppColors.surfaceSecondary,
-                backgroundImage: image != null ? NetworkImage(image) : null,
-                child: image == null
-                    ? Icon(Icons.person, color: AppColors.textTertiary)
-                    : null,
               ),
             ),
             if (!isFirst)
