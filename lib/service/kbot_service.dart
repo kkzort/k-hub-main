@@ -28,11 +28,11 @@ class KBotDocumentAnalysis {
 
   bool get isImage => type == KBotDocumentType.image;
 
-  String get sourceLabel => isPdf ? 'PDF' : 'Fotograf';
+  String get sourceLabel => isPdf ? 'PDF' : 'Fotoğraf';
 
-  String get sourceLabelLower => isPdf ? 'pdf' : 'fotograf';
+  String get sourceLabelLower => isPdf ? 'pdf' : 'fotoğraf';
 
-  String get unitLabel => isPdf ? 'sayfa' : 'gorsel';
+  String get unitLabel => isPdf ? 'sayfa' : 'görsel';
 }
 
 class KBotService {
@@ -100,7 +100,7 @@ class KBotService {
     String? fileName,
   }) async {
     throw Exception(
-      'Fotograf metin okuma bu cihaz kombinasyonunda gecici olarak devre disi. PDF yuklemeyi deneyebilirsin.',
+      'Fotoğraf metin okuma bu cihaz kombinasyonunda geçici olarak devre dışı. PDF yüklemeyi deneyebilirsin.',
     );
   }
 
@@ -116,11 +116,11 @@ class KBotService {
     if (normalizedText.length < minimumLength) {
       if (type == KBotDocumentType.image) {
         throw Exception(
-          'Fotografta okunabilir metin bulunamadi. Not, slayt veya ekran goruntusu gibi metin agirlikli bir fotograf dene.',
+          'Fotoğrafta okunabilir metin bulunamadı. Not, slayt veya ekran görüntüsü gibi metin ağırlıklı bir fotoğraf dene.',
         );
       }
       throw Exception(
-        'PDF metni okunamadi. Daha net metin iceren bir PDF dene.',
+        'PDF metni okunamadı. Daha net metin içeren bir PDF dene.',
       );
     }
 
@@ -152,12 +152,12 @@ class KBotService {
     if (analysis.isPdf) {
       buffer.writeln('Boyut: ${analysis.unitCount} ${analysis.unitLabel}');
     } else {
-      buffer.writeln('Fotograftaki metin tarandi ve ozetlendi.');
+      buffer.writeln('Fotoğraftaki metin tarandı ve özetlendi.');
     }
 
     buffer
       ..writeln()
-      ..writeln('Kisa ozet:')
+      ..writeln('Kısa özet:')
       ..writeln(analysis.shortSummary);
 
     if (analysis.keyPoints.isNotEmpty) {
@@ -172,7 +172,7 @@ class KBotService {
     if (analysis.studyQuestions.isNotEmpty) {
       buffer
         ..writeln()
-        ..writeln('Calisma sorulari:');
+        ..writeln('Çalışma soruları:');
       for (final question in analysis.studyQuestions.take(2)) {
         buffer.writeln('- $question');
       }
@@ -182,8 +182,8 @@ class KBotService {
       ..writeln()
       ..write(
         analysis.isPdf
-            ? 'Istersen bu PDF icin soru-cevap, daha kisa ozet veya sinav hazirligi yapabilirim.'
-            : 'Istersen bu fotograf icin daha kisa ozet, ana noktalar veya soru-cevap yapabilirim.',
+            ? 'İstersen bu PDF için soru-cevap, daha kısa özet veya sınav hazırlığı yapabilirim.'
+            : 'İstersen bu fotoğraf için daha kısa özet, ana noktalar veya soru-cevap yapabilirim.',
       );
 
     return buffer.toString();
@@ -192,7 +192,7 @@ class KBotService {
   String replyToPrompt(String prompt, {KBotDocumentAnalysis? document}) {
     final trimmed = prompt.trim();
     if (trimmed.isEmpty) {
-      return 'Bir mesaj yazarsan yardimci olabilirim.';
+      return 'Bir mesaj yazarsan yardımcı olabilirim.';
     }
 
     if (document != null) {
@@ -208,45 +208,45 @@ class KBotService {
   String _buildGeneralReply(String prompt, {KBotDocumentAnalysis? document}) {
     final lower = prompt.toLowerCase();
     final hasDocument = document != null;
-    final source = document?.sourceLabelLower ?? 'dokuman';
+    final source = document?.sourceLabelLower ?? 'doküman';
 
     if (lower.contains('merhaba') || lower.contains('selam')) {
       return hasDocument
-          ? 'Merhaba! Yukledigin $source ile ilgili soru sorabilir ya da benden genel bir calisma yardimi isteyebilirsin.'
-          : 'Merhaba! Ben K-Bot. PDF ve fotograf ozetleri cikarabilir, calisma plani hazirlayabilir ve genel amacli bir ogrenim asistani gibi yardimci olabilirim.';
+          ? 'Merhaba! Yüklediğin $source ile ilgili soru sorabilir ya da benden genel bir çalışma yardımı isteyebilirsin.'
+          : 'Merhaba! Ben K-Bot. PDF ve fotoğraf özetleri çıkarabilir, çalışma planı hazırlayabilir ve genel amaçlı bir öğrenim asistanı gibi yardımcı olabilirim.';
     }
 
     if (lower.contains('calisma plani')) {
-      return 'Hizli bir calisma plani onerisi:\n\n1. Konuyu 3 ana basliga ayir.\n2. Her baslik icin 25 dakikalik odak bloklari kur.\n3. Her blok sonunda 5 dakikada kendi kendine tekrar yap.\n4. En sonda 10 soruluk mini test hazirla.\n\nIstersen konuyu yaz, bunu sana o konuya gore ozellestireyim.';
+      return 'Hızlı bir çalışma planı önerisi:\n\n1. Konuyu 3 ana başlığa ayır.\n2. Her başlık için 25 dakikalık odak blokları kur.\n3. Her blok sonunda 5 dakikada kendi kendine tekrar yap.\n4. En sonda 10 soruluk mini test hazırla.\n\nİstersen konuyu yaz, bunu sana o konuya göre özelleştireyim.';
     }
 
     if (lower.contains('soru hazirla') ||
         lower.contains('soru uret') ||
         lower.contains('quiz')) {
-      return 'Sana soru hazirlayabilirim. En iyi sonuc icin ya PDF/fotograf yukle ya da konuyu net yaz: ornek olarak "anayasa konusu icin 5 soru hazirla".';
+      return 'Sana soru hazırlayabilirim. En iyi sonuç için ya PDF/fotoğraf yükle ya da konuyu net yaz: örnek olarak "anayasa konusu için 5 soru hazırla".';
     }
 
     if (lower.contains('ozet')) {
       return hasDocument
-          ? 'Yuklu $source icin daha kisa ozet, madde madde ozet veya ana fikir cikarabilirim. Ne tur bir ozet istedigini yazman yeterli.'
-          : 'Ozet cikarmam icin once bir PDF veya fotograf yukle. PDF olmadan da herhangi bir konu icin kisa aciklama veya calisma plani verebilirim.';
+          ? 'Yüklü $source için daha kısa özet, madde madde özet veya ana fikir çıkarabilirim. Ne tür bir özet istediğini yazman yeterli.'
+          : 'Özet çıkarmam için önce bir PDF veya fotoğraf yükle. PDF olmadan da herhangi bir konu için kısa açıklama veya çalışma planı verebilirim.';
     }
 
     if (lower.contains('ne yapabiliyorsun') || lower.contains('yardim')) {
-      return 'Yapabileceklerim:\n\n- PDF yukleyip kisa ozet cikarmak\n- Fotograf veya ekran goruntusundeki metni ozetlemek\n- Yuklenen dokuman icin soru-cevap yapmak\n- Ana noktalar ve calisma sorulari uretmek\n- Genel calisma asistani gibi plan ve yonlendirme vermek';
+      return 'Yapabileceklerim:\n\n- PDF yükleyip kısa özet çıkarmak\n- Fotoğraf veya ekran görüntüsündeki metni özetlemek\n- Yüklenen doküman için soru-cevap yapmak\n- Ana noktalar ve çalışma soruları üretmek\n- Genel çalışma asistanı gibi plan ve yönlendirme vermek';
     }
 
     return hasDocument
-        ? 'Yuklu $source uzerinden devam edebilirim. Ornek sorular:\n\n- "Ana fikri ne?"\n- "3 maddede ozetle"\n- "Bu konudan 5 soru hazirla"\n- "Sinav icin kritik yerleri cikar"'
-        : 'Ben K-Bot. Su an cihaz ici calisan premium bir ogrenim asistaniyim. Bir PDF veya fotograf yukleyebilir ya da dogrudan bir konu yazip ozet, plan ve soru isteyebilirsin.';
+        ? 'Yüklü $source üzerinden devam edebilirim. Örnek sorular:\n\n- "Ana fikri ne?"\n- "3 maddede özetle"\n- "Bu konudan 5 soru hazırla"\n- "Sınav için kritik yerleri çıkar"'
+        : 'Ben K-Bot. Şu an cihaz içi çalışan premium bir öğrenim asistanıyım. Bir PDF veya fotoğraf yükleyebilir ya da doğrudan bir konu yazıp özet, plan ve soru isteyebilirsin.';
   }
 
   String? _buildDocumentReply(String prompt, KBotDocumentAnalysis document) {
     final lower = prompt.toLowerCase();
-    final source = document.isPdf ? 'PDF' : 'fotograf';
+    final source = document.isPdf ? 'PDF' : 'fotoğraf';
 
     if (lower.contains('ozet')) {
-      return '$source ozeti:\n\n${document.shortSummary}';
+      return '$source özeti:\n\n${document.shortSummary}';
     }
 
     if (lower.contains('ana fikir') ||
@@ -256,7 +256,7 @@ class KBotService {
           .take(4)
           .map((item) => '- $item')
           .join('\n');
-      return 'Bu $source icin one cikan noktalar:\n\n$bulletLines';
+      return 'Bu $source için öne çıkan noktalar:\n\n$bulletLines';
     }
 
     if (lower.contains('soru') ||
@@ -266,7 +266,7 @@ class KBotService {
           .take(4)
           .map((item) => '- $item')
           .join('\n');
-      return 'Bu $source uzerinden calisabilecegin sorular:\n\n$questionLines';
+      return 'Bu $source üzerinden çalışabileceğin sorular:\n\n$questionLines';
     }
 
     final relevantSentences = _findRelevantSentences(
@@ -276,10 +276,10 @@ class KBotService {
     );
 
     if (relevantSentences.isEmpty) {
-      return 'Bu soruya dogrudan baglanan bir bolum bulamadim. Dilersen "ana noktalar", "ozet" veya "soru hazirla" gibi daha net bir istekle devam edelim.';
+      return 'Bu soruya doğrudan bağlanan bir bölüm bulamadım. Dilersen "ana noktalar", "özet" veya "soru hazırla" gibi daha net bir istekle devam edelim.';
     }
 
-    return '$source gore en ilgili kisimlar:\n\n${relevantSentences.map((line) => '- $line').join('\n')}\n\nIstersen bunu daha kisa, daha detayli ya da soru-cevap formatinda duzenleyebilirim.';
+    return '$source göre en ilgili kısımlar:\n\n${relevantSentences.map((line) => '- $line').join('\n')}\n\nİstersen bunu daha kısa, daha detaylı ya da soru-cevap formatında düzenleyebilirim.';
   }
 
   List<String> _findRelevantSentences(
@@ -375,13 +375,13 @@ class KBotService {
     required KBotDocumentType type,
   }) {
     final baseTopic = type == KBotDocumentType.pdf
-        ? '$fileName dokumaninin'
-        : '$fileName fotografindaki metnin';
+        ? '$fileName dokümanının'
+        : '$fileName fotoğrafındaki metnin';
 
     if (rankedSentences.isEmpty) {
       return [
-        '$baseTopic ana fikrini bir paragrafta acikla.',
-        '$baseTopic sinavda cikabilecek 3 kritik konusu nedir?',
+        '$baseTopic ana fikrini bir paragrafta açıkla.',
+        '$baseTopic sınavda çıkabilecek 3 kritik konusu nedir?',
       ];
     }
 
@@ -389,7 +389,7 @@ class KBotService {
       final shortened = sentence.length > 90
           ? '${sentence.substring(0, 90).trim()}...'
           : sentence;
-      return 'Su ifadeyi acikla ve ornekle: "$shortened"';
+      return 'Şu ifadeyi açıkla ve örnekle: "$shortened"';
     }).toList();
   }
 
