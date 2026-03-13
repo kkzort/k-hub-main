@@ -18,14 +18,14 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     final confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Yetki Degisikligi'),
+            title: const Text('Yetki Değişikliği'),
             content: Text(
-              "Kullanici yetkisini '$newRole' olarak degistirmek istiyor musunuz?",
+              "Kullanıcı yetkisini '$newRole' olarak değiştirmek istiyor musunuz?",
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Hayir'),
+                child: const Text('Hayır'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -41,7 +41,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     await _firestore.collection('users').doc(uid).update({'role': newRole});
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Yeni yetki: $newRole olarak ayarlandi.')),
+      SnackBar(content: Text('Yeni yetki: $newRole olarak ayarlandı.')),
     );
   }
 
@@ -55,7 +55,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     });
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(isApproved ? 'Onay kaldirildi.' : 'Kullanici onaylandi.')),
+      SnackBar(content: Text(isApproved ? 'Onay kaldırıldı.' : 'Kullanıcı onaylandı.')),
     );
   }
 
@@ -196,7 +196,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     if (url == null || url.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Belge bulunamadi.')),
+          const SnackBar(content: Text('Belge bulunamadı.')),
         );
       }
       return;
@@ -204,7 +204,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
 
     if (!await launchUrl(Uri.parse(url)) && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Belge acilamadi.')),
+        const SnackBar(content: Text('Belge açılamadı.')),
       );
     }
   }
@@ -214,7 +214,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Kullanici Yonetimi', style: TextStyle(color: AppColors.textHeader)),
+        title: Text('Kullanıcı Yönetimi', style: TextStyle(color: AppColors.textHeader)),
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textHeader,
         iconTheme: IconThemeData(color: AppColors.textHeader),
@@ -229,7 +229,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Kayitli kullanici bulunamadi.'));
+            return const Center(child: Text('Kayıtlı kullanıcı bulunamadı.'));
           }
 
           final users = snapshot.data!.docs;
@@ -318,7 +318,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text(
-                            'ONAY BEKLIYOR',
+                            'ONAY BEKLİYOR',
                             style: TextStyle(
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
@@ -343,7 +343,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                           onPressed: () => _toggleVerified(uid, isVerified, name.toString()),
                         ),
                         IconButton(
-                          tooltip: 'Belgeyi Goruntule',
+                          tooltip: 'Belgeyi Görüntüle',
                           icon: Icon(
                             Icons.description_outlined,
                             color: docUrl != null ? Colors.blue : Colors.grey,
@@ -351,7 +351,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                           onPressed: () => _viewDocument(docUrl),
                         ),
                         IconButton(
-                          tooltip: isApproved ? 'Onayi Kaldir' : 'Onayla',
+                          tooltip: isApproved ? 'Onayı Kaldır' : 'Onayla',
                           icon: Icon(
                             isApproved ? Icons.cancel_outlined : Icons.check_circle_outline,
                             color: isApproved ? Colors.red : Colors.green,
@@ -359,7 +359,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                           onPressed: () => _approveUser(uid, isApproved),
                         ),
                         IconButton(
-                          tooltip: isBanned ? 'Ban Kaldir' : 'Banla',
+                          tooltip: isBanned ? 'Ban Kaldır' : 'Banla',
                           icon: Icon(
                             isBanned ? Icons.lock_open : Icons.block,
                             color: isBanned ? Colors.green : Colors.red,
@@ -372,7 +372,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                         ),
                       ],
                       IconButton(
-                        tooltip: 'Rolu Degistir',
+                        tooltip: 'Rolü Değiştir',
                         icon: const Icon(Icons.swap_horiz, color: Colors.grey),
                         onPressed: () => _changeUserRole(uid, role.toString()),
                       ),
