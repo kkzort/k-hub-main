@@ -7373,16 +7373,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 ),
               ),
               SizedBox(width: 12),
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: AppColors.surfaceSecondary,
-                backgroundImage: images[user.key] != null
-                    ? NetworkImage(images[user.key]!)
-                    : null,
-                child: images[user.key] == null
-                    ? Icon(Icons.person, color: AppColors.textTertiary)
-                    : null,
-              ),
+              _buildLeaderboardAvatar(imageUrl: images[user.key], radius: 20),
               SizedBox(width: 16),
               Expanded(
                 child: Column(
