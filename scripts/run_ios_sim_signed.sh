@@ -24,8 +24,12 @@ fi
 
 cd "$ROOT_DIR"
 
-echo "[1/5] iOS simulator build alınıyor (codesign kapalı)..."
-flutter build ios --simulator --debug --no-codesign
+if [[ "${SKIP_BUILD:-0}" != "1" ]]; then
+  echo "[1/5] iOS simulator build alınıyor (codesign kapalı)..."
+  flutter build ios --simulator --debug --no-codesign
+else
+  echo "[1/5] SKIP_BUILD=1, mevcut build kullanılacak."
+fi
 
 if [[ ! -d "$BUILD_APP_PATH" ]]; then
   echo "Runner.app bulunamadı: $BUILD_APP_PATH"
