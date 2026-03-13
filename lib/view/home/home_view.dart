@@ -7419,6 +7419,36 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
     return Column(children: listItems);
   }
+
+  String? _normalizeImageUrl(dynamic raw) {
+    if (raw == null) return null;
+    final url = raw.toString().trim();
+    if (url.isEmpty || url == 'null') return null;
+    return url;
+  }
+
+  Widget _buildLeaderboardAvatar({
+    required String? imageUrl,
+    required double radius,
+  }) {
+    final safeUrl = _normalizeImageUrl(imageUrl);
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: AppColors.surfaceSecondary,
+      child: safeUrl == null
+          ? Icon(Icons.person, color: AppColors.textTertiary)
+          : ClipOval(
+              child: Image.network(
+                safeUrl,
+                width: radius * 2,
+                height: radius * 2,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    Icon(Icons.person, color: AppColors.textTertiary),
+              ),
+            ),
+    );
+  }
 }
 
 // --- DETAY SAYFASI ---
