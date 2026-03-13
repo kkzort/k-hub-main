@@ -2685,7 +2685,7 @@ class _HomeViewState extends State<HomeView> {
     'K-Bot': _ToolMeta(
       const Color(0xFF0F274A),
       const Color(0xFF1DA1F2),
-      'Premium PDF ve fotograf ozeti',
+      'Premium PDF ve fotoğraf özeti',
     ),
   };
 
