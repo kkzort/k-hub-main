@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_functions/firebase_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -132,20 +133,32 @@ class _PremiumViewState extends State<PremiumView> {
     if (user == null) return false;
 
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'isPremium': true,
-        'premiumStatus': 'active',
-        'premiumPlan': purchase.productID,
-        'premiumSource': _storeSource(),
-        'premiumPurchaseId': purchase.purchaseID,
-        'premiumProductId': purchase.productID,
-        'premiumTransactionDate': purchase.transactionDate,
-        'premiumLastVerification': 'client_pending_backend_verification',
-        'premiumActivatedAt': FieldValue.serverTimestamp(),
-        'premiumUpdatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      final callable = FirebaseFunctions.instance
+          .httpsCallable('verifyPremiumPurchase');
+      final result = await callable.call({
+        'productId': purchase.productID,
+        'purchaseId': purchase.purchaseID,
+        'transactionDate': purchase.transactionDate,
+        'purchaseStatus': purchase.status.toString().split('.').last,
+        'storeSource': _storeSource(),
+        'verificationData': {
+          'source': purchase.verificationData.source,
+          'serverVerificationData':
+              purchase.verificationData.serverVerificationData,
+          'localVerificationData':
+              purchase.verificationData.localVerificationData,
+        },
+      });
 
-      return true;
+      final data = result.data;
+      return data is Map && data['ok'] == true;
+    } on FirebaseFunctionsException catch (e) {
+      if (mounted) {
+        setState(() {
+          _storeError = e.message ?? 'Satın alma doğrulanamadı.';
+        });
+      }
+      return false;
     } catch (_) {
       return false;
     }
@@ -179,7 +192,7 @@ class _PremiumViewState extends State<PremiumView> {
             );
           } else {
             _showMessage(
-              'Satın alma alındı fakat premium yazılamadı. Tekrar dene.',
+              'Satın alma alındı fakat premium doğrulanamadı. Tekrar dene.',
               isError: true,
             );
           }
