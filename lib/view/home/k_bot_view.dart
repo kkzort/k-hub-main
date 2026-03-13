@@ -38,7 +38,7 @@ class _KBotViewState extends State<KBotView> {
     super.initState();
     _messages.add({
       'text':
-          'Merhaba! Ben K-Bot.\n\nPremium kullanicilar icin PDF ve fotograf ozetleri cikarabilir, yukledigin dokuman uzerinden soru cevap yapabilir ve genel bir ogrenim asistani gibi yardimci olabilirim.',
+          'Merhaba! Ben K-Bot.\n\nPremium kullanıcılar için PDF ve fotoğraf özetleri çıkarabilir, yüklediğin doküman üzerinden soru-cevap yapabilir ve genel bir öğrenim asistanı gibi yardımcı olabilirim.',
       'isUser': false,
       'time': DateTime.now(),
     });
@@ -71,7 +71,7 @@ class _KBotViewState extends State<KBotView> {
 
     final file = File(picked.path!);
     await _analyzeAttachment(
-      userMessage: 'PDF yuklendi: ${picked.name}',
+      userMessage: 'PDF yüklendi: ${picked.name}',
       analyzer: () => _kbotService.analyzePdf(file, fileName: picked.name),
     );
   }
@@ -93,8 +93,8 @@ class _KBotViewState extends State<KBotView> {
 
     await _analyzeAttachment(
       userMessage: source == ImageSource.camera
-          ? 'Fotograf cekildi: $fileName'
-          : 'Fotograf secildi: $fileName',
+          ? 'Fotoğraf çekildi: $fileName'
+          : 'Fotoğraf seçildi: $fileName',
       analyzer: () => _kbotService.analyzeImage(file, fileName: fileName),
     );
   }
@@ -177,7 +177,7 @@ class _KBotViewState extends State<KBotView> {
       _activeDocument = null;
       _messages.add({
         'text':
-            'Yuklu dokuman baglami temizlendi. Istersen yeni bir PDF veya fotograf yukleyebilir ya da genel sohbete devam edebilirsin.',
+            'Yüklü doküman bağlamı temizlendi. İstersen yeni bir PDF veya fotoğraf yükleyebilir ya da genel sohbete devam edebilirsin.',
         'isUser': false,
         'time': DateTime.now(),
       });
@@ -215,8 +215,8 @@ class _KBotViewState extends State<KBotView> {
                     Icons.picture_as_pdf_rounded,
                     color: widget.kPrimaryColor,
                   ),
-                  title: const Text('PDF sec'),
-                  subtitle: const Text('Dokuman yukleyip ozet cikar'),
+                  title: const Text('PDF seç'),
+                  subtitle: const Text('Doküman yükleyip özet çıkar'),
                   onTap: () {
                     Navigator.pop(context);
                     _pickPdf();
@@ -227,8 +227,8 @@ class _KBotViewState extends State<KBotView> {
                     Icons.photo_library_outlined,
                     color: widget.kPrimaryColor,
                   ),
-                  title: const Text('Galeriden fotograf sec'),
-                  subtitle: const Text('Not, slayt veya ekran goruntusu tara'),
+                  title: const Text('Galeriden fotoğraf seç'),
+                  subtitle: const Text('Not, slayt veya ekran görüntüsü tara'),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImage(ImageSource.gallery);
@@ -239,8 +239,8 @@ class _KBotViewState extends State<KBotView> {
                     Icons.photo_camera_outlined,
                     color: widget.kPrimaryColor,
                   ),
-                  title: const Text('Kamera ile cek'),
-                  subtitle: const Text('Anlik fotograf cekip ozet al'),
+                  title: const Text('Kamera ile çek'),
+                  subtitle: const Text('Anlık fotoğraf çekip özet al'),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImage(ImageSource.camera);
@@ -269,14 +269,14 @@ class _KBotViewState extends State<KBotView> {
   String _activeDocumentLabel() {
     final document = _activeDocument;
     if (document == null) {
-      return 'PDF veya fotograf yukleyip ozet cikarabilir ya da dogrudan sohbete baslayabilirsin.';
+      return 'PDF veya fotoğraf yükleyip özet çıkarabilir ya da doğrudan sohbete başlayabilirsin.';
     }
 
     if (document.isPdf) {
-      return 'Aktif dokuman: ${document.fileName} (${document.unitCount} ${document.unitLabel})';
+      return 'Aktif doküman: ${document.fileName} (${document.unitCount} ${document.unitLabel})';
     }
 
-    return 'Aktif gorsel: ${document.fileName}';
+    return 'Aktif görsel: ${document.fileName}';
   }
 
   Widget _buildLockedState() {
@@ -319,7 +319,7 @@ class _KBotViewState extends State<KBotView> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'K-Bot kullanimi premium plan ile acik. PDF/fotograf ozeti ve dokuman bazli soru-cevap ozellikleri burada.',
+                      'K-Bot kullanımı premium plan ile açık. PDF/fotoğraf özeti ve doküman bazlı soru-cevap özellikleri burada.',
                       style: TextStyle(fontSize: 13.5, height: 1.45),
                     ),
                   ],
@@ -328,18 +328,18 @@ class _KBotViewState extends State<KBotView> {
               const SizedBox(height: 18),
               const _LockedFeatureRow(
                 icon: Icons.picture_as_pdf_rounded,
-                title: 'PDF ozeti',
-                subtitle: 'Yukledigin dosyayi hizli ozetler.',
+                title: 'PDF özeti',
+                subtitle: 'Yüklediğin dosyayı hızlı özetler.',
               ),
               const _LockedFeatureRow(
                 icon: Icons.image_search_rounded,
-                title: 'Gorsel analizi',
-                subtitle: 'Not ve ekran goruntusunden metin cikarir.',
+                title: 'Görsel analizi',
+                subtitle: 'Not ve ekran görüntüsünden metin çıkarır.',
               ),
               const _LockedFeatureRow(
                 icon: Icons.quiz_outlined,
-                title: 'Dokuman sorulari',
-                subtitle: 'Yuklenen icerik uzerinden soru-cevap yapar.',
+                title: 'Doküman soruları',
+                subtitle: 'Yüklenen içerik üzerinden soru-cevap yapar.',
               ),
               const Spacer(),
               SizedBox(
@@ -360,7 +360,7 @@ class _KBotViewState extends State<KBotView> {
                     ),
                   ),
                   child: const Text(
-                    'Premiuma gec',
+                    'Premiuma geç',
                     style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -463,7 +463,7 @@ class _KBotViewState extends State<KBotView> {
                           Text(
                             _isProcessingAttachment
                                 ? 'Dosya okunuyor...'
-                                : 'K-Bot yaziyor...',
+                                : 'K-Bot yazıyor...',
                             style: TextStyle(
                               color: AppColors.textBody,
                               fontSize: 13,
@@ -573,7 +573,7 @@ class _KBotViewState extends State<KBotView> {
                     decoration: InputDecoration(
                       hintText: _activeDocument == null
                           ? 'Mesaj yaz...'
-                          : 'Dokuman hakkinda sorunu yaz...',
+                          : 'Doküman hakkında sorunu yaz...',
                       hintStyle: TextStyle(color: AppColors.textBody),
                       fillColor: AppColors.background,
                       filled: true,
