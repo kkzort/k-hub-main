@@ -8,7 +8,7 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
   const AdminEventPreRegistrationsView({super.key});
 
   String _formatDate(Timestamp? timestamp) {
-    if (timestamp == null) return 'Tarih belirtilmemis';
+    if (timestamp == null) return 'Tarih belirtilmemiş';
     return DateFormat('dd.MM.yyyy HH:mm', 'tr').format(timestamp.toDate());
   }
 
@@ -18,7 +18,7 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          'On Kayitlar',
+          'Ön Kayıtlar',
           style: TextStyle(color: AppColors.textHeader),
         ),
         backgroundColor: AppColors.surface,
@@ -48,7 +48,7 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Henuz on kayit yok.',
+                    'Henüz ön kayıt yok.',
                     style: TextStyle(
                       color: AppColors.textTertiary,
                       fontSize: 16,
@@ -81,7 +81,7 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Text(
-                  'On kayit yaptiran ogrenciler burada etkinlige gore gruplanir. Her kayitta kullanici adi, maili ve kayit zamani gorunur.',
+                  'Ön kayıt yaptıran öğrenciler burada etkinliğe göre gruplanır. Her kayıtta kullanıcı adı, e-postası ve kayıt zamanı görünür.',
                   style: TextStyle(color: AppColors.textBody, height: 1.45),
                 ),
               ),
@@ -113,13 +113,13 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${registrations.length} on kayit • ${_formatDate(eventDate)}${location.isNotEmpty ? ' • $location' : ''}',
+                      '${registrations.length} ön kayıt • ${_formatDate(eventDate)}${location.isNotEmpty ? ' • $location' : ''}',
                       style: TextStyle(color: AppColors.textBody),
                     ),
                     children: registrations.map((doc) {
                       final data = doc.data() as Map<String, dynamic>;
                       final userName =
-                          data['userName']?.toString() ?? 'Kullanici';
+                          data['userName']?.toString() ?? 'Kullanıcı';
                       final userEmail = data['userEmail']?.toString() ?? '';
                       final registeredAt = data['registeredAt'] as Timestamp?;
 
@@ -172,7 +172,7 @@ class AdminEventPreRegistrationsView extends StatelessWidget {
                                     ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    'Kayit zamani: ${_formatDate(registeredAt)}',
+                                    'Kayıt zamanı: ${_formatDate(registeredAt)}',
                                     style: TextStyle(
                                       color: AppColors.textTertiary,
                                       fontSize: 12,
