@@ -20,12 +20,12 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
     final confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Ban Kaldir'),
-            content: Text('$name kullanicisinin banini kaldirmak istiyor musunuz?'),
+            title: const Text('Ban Kaldır'),
+            content: Text('$name kullanıcısının banını kaldırmak istiyor musunuz?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Hayir'),
+                child: const Text('Hayır'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -46,7 +46,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$name ban listesinden cikarildi.')),
+      SnackBar(content: Text('$name ban listesinden çıkarıldı.')),
     );
   }
 
@@ -79,7 +79,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData) {
-            return const Center(child: Text('Veri alinamadi.'));
+            return const Center(child: Text('Veri alınamadı.'));
           }
 
           final bannedUsers = snapshot.data!.docs.where((doc) {
@@ -89,7 +89,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
 
           if (bannedUsers.isEmpty) {
             return const Center(
-              child: Text('Banli kullanici bulunmuyor.'),
+              child: Text('Banlı kullanıcı bulunmuyor.'),
             );
           }
 
@@ -103,7 +103,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
               final name = (data['name'] ?? 'Bilinmiyor').toString();
               final email = (data['email'] ?? 'Bilinmiyor').toString();
               final banReason =
-                  (data['banReason'] ?? 'Yonetici tarafindan banlandi').toString();
+                  (data['banReason'] ?? 'Yönetici tarafından banlandı').toString();
               final bannedAt = data['bannedAt'];
 
               return Card(
@@ -130,7 +130,7 @@ class _AdminBlacklistViewState extends State<AdminBlacklistView> {
                   ),
                   isThreeLine: true,
                   trailing: IconButton(
-                    tooltip: 'Ban Kaldir',
+                    tooltip: 'Ban Kaldır',
                     icon: const Icon(Icons.lock_open, color: Colors.green),
                     onPressed: () => _unbanUser(uid: doc.id, name: name),
                   ),
