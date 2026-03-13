@@ -66,7 +66,7 @@ class EventCalendarView extends StatelessWidget {
   String _discountNote(Map<String, dynamic> data) {
     final custom = _stringValue(data, 'preRegistrationDiscountNote');
     if (custom.isNotEmpty) return custom;
-    return 'On kayit yaptiran ogrenciler etkinlik girisinde ogrenci indirimi ve oncelikli bilgilendirme avantajindan yararlanir.';
+    return 'Ön kayıt yaptıran öğrenciler etkinlik girişinde öğrenci indirimi ve öncelikli bilgilendirme avantajından yararlanır.';
   }
 
   Future<void> _registerForEvent(
@@ -78,7 +78,7 @@ class EventCalendarView extends StatelessWidget {
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('On kayit icin once giris yapman gerekiyor.'),
+          content: Text('Ön kayıt için önce giriş yapman gerekiyor.'),
         ),
       );
       return;
@@ -98,7 +98,7 @@ class EventCalendarView extends StatelessWidget {
         ? name
         : displayName.isNotEmpty
         ? displayName
-        : (user.email?.split('@').first ?? 'Kullanici');
+        : (user.email?.split('@').first ?? 'Kullanıcı');
 
     await FirebaseFirestore.instance
         .collection('event_preregistrations')
@@ -121,7 +121,7 @@ class EventCalendarView extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${_stringValue(eventData, 'title').isNotEmpty ? _stringValue(eventData, 'title') : 'Etkinlik'} icin on kaydin alindi.',
+          '${_stringValue(eventData, 'title').isNotEmpty ? _stringValue(eventData, 'title') : 'Etkinlik'} için ön kaydın alındı.',
         ),
       ),
     );
@@ -189,7 +189,7 @@ class EventCalendarView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: const Text(
-                              'BUGUN',
+                              'BUGÜN',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -225,7 +225,7 @@ class EventCalendarView extends StatelessWidget {
                         Text(
                           description.isNotEmpty
                               ? description
-                              : 'Bu etkinlik icin henuz detayli bir aciklama eklenmemis.',
+                              : 'Bu etkinlik için henüz detaylı bir açıklama eklenmemiş.',
                           style: TextStyle(
                             color: AppColors.textBody,
                             fontSize: 14,
@@ -255,7 +255,7 @@ class EventCalendarView extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'On kayit ve ogrenci indirimi',
+                                      'Ön kayıt ve öğrenci indirimi',
                                       style: TextStyle(
                                         color: AppColors.textHeader,
                                         fontWeight: FontWeight.w800,
@@ -307,8 +307,8 @@ class EventCalendarView extends StatelessWidget {
                               onPressed: () => Navigator.pop(sheetContext),
                               child: Text(
                                 _isPast(eventDate)
-                                    ? 'Etkinlik tamamlandi'
-                                    : 'On kayit kapali',
+                                    ? 'Etkinlik tamamlandı'
+                                    : 'Ön kayıt kapalı',
                               ),
                             ),
                           ),
@@ -352,7 +352,7 @@ class EventCalendarView extends StatelessWidget {
                 Icon(Icons.calendar_month, color: Colors.white70, size: 36),
                 SizedBox(height: 8),
                 Text(
-                  'Yaklasan Etkinlikler',
+                  'Yaklaşan Etkinlikler',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -361,7 +361,7 @@ class EventCalendarView extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Gorselli etkinlik kartlarina dokunup detaylari inceleyin',
+                  'Görselli etkinlik kartlarına dokunup detayları inceleyin',
                   style: TextStyle(color: Colors.white70, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
@@ -385,7 +385,7 @@ class EventCalendarView extends StatelessWidget {
                 if (snapshot.hasError) {
                   return const _ErrorState(
                     message:
-                        'Etkinlikler yuklenirken bir sorun oldu. Lutfen tekrar dene.',
+                        'Etkinlikler yüklenirken bir sorun oldu. Lütfen tekrar dene.',
                   );
                 }
 
@@ -511,7 +511,7 @@ class EventCalendarView extends StatelessWidget {
                                         top: 14,
                                         right: 14,
                                         child: _BadgeChip(
-                                          label: 'GECTI',
+                                          label: 'GEÇTİ',
                                           color: Colors.black54,
                                           textColor: Colors.white,
                                         ),
@@ -541,7 +541,7 @@ class EventCalendarView extends StatelessWidget {
                                       Text(
                                         description.isNotEmpty
                                             ? description
-                                            : 'Detaylari gormek icin karta dokun.',
+                                            : 'Detayları görmek için karta dokun.',
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -569,7 +569,7 @@ class EventCalendarView extends StatelessWidget {
                                           if (!isPast && preRegistrationEnabled)
                                             const _MetaChip(
                                               icon: Icons.local_offer_outlined,
-                                              label: 'On kayit ve indirim',
+                                              label: 'Ön kayıt ve indirim',
                                               color: Colors.orange,
                                             ),
                                         ],
@@ -578,7 +578,7 @@ class EventCalendarView extends StatelessWidget {
                                       Row(
                                         children: [
                                           Text(
-                                            'Detaylari gormek icin dokun',
+                                            'Detayları görmek için dokun',
                                             style: TextStyle(
                                               color: AppColors.textTertiary,
                                               fontSize: 12,
@@ -638,7 +638,7 @@ class _EventRegistrationButton extends StatelessWidget {
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('On kayit icin once giris yapman gerekiyor.'),
+                content: Text('Ön kayıt için önce giriş yapman gerekiyor.'),
               ),
             );
           },
@@ -651,7 +651,7 @@ class _EventRegistrationButton extends StatelessWidget {
             ),
           ),
           child: const Text(
-            'On kayit yaptir',
+            'Ön kayıt yaptır',
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
@@ -686,7 +686,7 @@ class _EventRegistrationButton extends StatelessWidget {
                   : Icons.app_registration_rounded,
             ),
             label: Text(
-              alreadyRegistered ? 'On kayit yapildi' : 'On kayit yaptir',
+              alreadyRegistered ? 'Ön kayıt yapıldı' : 'Ön kayıt yaptır',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -931,7 +931,7 @@ class _EmptyState extends StatelessWidget {
           Icon(Icons.event_busy, size: 64, color: AppColors.textTertiary),
           const SizedBox(height: 16),
           Text(
-            'Henuz etkinlik eklenmemis',
+            'Henüz etkinlik eklenmemiş',
             style: TextStyle(color: AppColors.textTertiary, fontSize: 16),
           ),
         ],
