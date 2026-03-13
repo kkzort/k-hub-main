@@ -6983,6 +6983,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
           Map<String, int> userLikes = {};
           Map<String, String> userDepartments = {};
           Map<String, String?> userImages = {};
+          Map<String, String?> userEmails = {};
 
           for (var doc in snapshot.data!.docs) {
             try {
@@ -6995,8 +6996,13 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               if (data['department'] != null) {
                 userDepartments[uName] = data['department'];
               }
-              if (data['userImage'] != null) {
-                userImages[uName] = data['userImage'];
+              final noteImage = _normalizeImageUrl(data['userImage']);
+              if (noteImage != null) {
+                userImages[uName] = noteImage;
+              }
+              final email = (data['userEmail'] ?? '').toString().trim();
+              if (email.isNotEmpty) {
+                userEmails[uName] = email;
               }
             } catch (_) {}
           }
@@ -7005,45 +7011,76 @@ class _LeaderboardViewState extends State<LeaderboardView> {
               userLikes.entries.where((entry) => entry.value > 0).toList()
                 ..sort((a, b) => b.value.compareTo(a.value));
 
-          return Column(
-            children: [
-              const SizedBox(height: 16),
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            builder: (context, userSnapshot) {
+              final imageLookup = <String, String>{};
+              for (final doc in userSnapshot.data?.docs ?? const []) {
+                try {
+                  final data = doc.data() as Map<String, dynamic>;
+                  final photoUrl = _normalizeImageUrl(data['photoUrl']);
+                  if (photoUrl == null) continue;
+                  final nick = (data['nick'] ?? '').toString().trim();
+                  final name = (data['name'] ?? '').toString().trim();
+                  final email = (data['email'] ?? '').toString().trim();
+                  if (nick.isNotEmpty) imageLookup[nick.toLowerCase()] = photoUrl;
+                  if (name.isNotEmpty) imageLookup[name.toLowerCase()] = photoUrl;
+                  if (email.isNotEmpty) {
+                    imageLookup[email.toLowerCase()] = photoUrl;
+                  }
+                } catch (_) {}
+              }
 
-              Expanded(
-                child: sortedUsers.isEmpty
-                    ? const SizedBox.shrink()
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            _buildPodium(sortedUsers, userImages),
-                            SizedBox(height: 30),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "SIRALAMA",
-                                  style: TextStyle(
-                                    color: AppColors.textBody,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                    letterSpacing: 1.2,
+              for (final userName in userLikes.keys) {
+                userImages[userName] ??= imageLookup[userName.toLowerCase()];
+                final userEmail = userEmails[userName];
+                if (userImages[userName] == null &&
+                    userEmail != null &&
+                    userEmail.isNotEmpty) {
+                  userImages[userName] = imageLookup[userEmail.toLowerCase()];
+                }
+              }
+
+              return Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: sortedUsers.isEmpty
+                        ? const SizedBox.shrink()
+                        : SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                _buildPodium(sortedUsers, userImages),
+                                SizedBox(height: 30),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 24),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "SIRALAMA",
+                                      style: TextStyle(
+                                        color: AppColors.textBody,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                        letterSpacing: 1.2,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(height: 10),
+                                _buildRankList(
+                                  sortedUsers,
+                                  userDepartments,
+                                  userImages,
+                                ),
+                                SizedBox(height: 40),
+                              ],
                             ),
-                            SizedBox(height: 10),
-                            _buildRankList(
-                              sortedUsers,
-                              userDepartments,
-                              userImages,
-                            ),
-                            SizedBox(height: 40),
-                          ],
-                        ),
-                      ),
-              ),
-            ],
+                          ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
