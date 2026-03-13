@@ -49,7 +49,7 @@ Future<void> showProfilePhotoPreview(BuildContext context, String imageUrl) {
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: true,
-    barrierLabel: 'Profil fotografi onizleme',
+    barrierLabel: 'Profil fotoğrafı önizleme',
     barrierColor: Colors.black87,
     transitionDuration: const Duration(milliseconds: 180),
     pageBuilder: (dialogContext, animation, secondaryAnimation) {
