@@ -7017,7 +7017,6 @@ class LeaderboardView extends StatefulWidget {
 class _LeaderboardViewState extends State<LeaderboardView> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -7082,7 +7081,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                           children: [
                             _buildPodium(sortedUsers, userImages),
                             SizedBox(height: 30),
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24),
                               child: Align(
                                 alignment: Alignment.centerLeft,
