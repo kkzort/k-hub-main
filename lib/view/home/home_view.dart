@@ -275,24 +275,6 @@ class _HomeViewState extends State<HomeView> {
   ];
   final List<String> courses = [
     "Hepsi",
-    "Matematik",
-    "Fizik",
-    "Kimya",
-    "Biyoloji",
-    "Programlama",
-    "Veri Yapıları",
-    "Algoritma",
-    "Veritabanı",
-    "İngilizce",
-    "Türk Dili",
-    "Atatürk İlkeleri",
-    "Anatomi",
-    "Fizyoloji",
-    "Hukuka Giriş",
-    "İktisat",
-    "Muhasebe",
-    "İstatistik",
-    "Diğer",
   ];
   // Bildirimler her zaman açık
 
@@ -6195,7 +6177,7 @@ class _HomeViewState extends State<HomeView> {
               ? departmentsByFaculty[f]![1]
               : "Hepsi")
         : selectedDepartment;
-    String crs = selectedCourse == "Hepsi" ? courses[1] : selectedCourse;
+    String crs = courses.contains(selectedCourse) ? selectedCourse : "Hepsi";
     File? selectedFile;
     String? selectedFileName;
     bool isUploading = false;
@@ -6280,7 +6262,6 @@ class _HomeViewState extends State<HomeView> {
                           _buildFormDropdown<String>(
                             value: crs,
                             items: courses
-                                .where((e) => e != "Hepsi")
                                 .map(
                                   (e) => DropdownMenuItem(
                                     value: e,
