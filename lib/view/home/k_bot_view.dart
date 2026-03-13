@@ -287,102 +287,86 @@ class _KBotViewState extends State<KBotView> {
         backgroundColor: widget.kPrimaryColor,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF0F274A),
-                    Color(0xFF144782),
-                    Color(0xFF1DA1F2),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: AppColors.border),
                 ),
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      VerifiedBadge(type: 'verified', size: 24),
-                      SizedBox(width: 8),
-                      Text(
-                        'K-Bot Premium',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        VerifiedBadge(type: 'verified', size: 22),
+                        SizedBox(width: 8),
+                        Text(
+                          'K-Bot Premium',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Premium kullanicilar PDF ve fotograf ozetleri cikarabilir, yukledigi dokumanlar uzerinden soru sorabilir ve K-Bot ile daha gelismis sekilde sohbet edebilir.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      height: 1.45,
-                      fontSize: 14,
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'K-Bot kullanimi premium plan ile acik. PDF/fotograf ozeti ve dokuman bazli soru-cevap ozellikleri burada.',
+                      style: TextStyle(fontSize: 13.5, height: 1.45),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              const _LockedFeatureRow(
+                icon: Icons.picture_as_pdf_rounded,
+                title: 'PDF ozeti',
+                subtitle: 'Yukledigin dosyayi hizli ozetler.',
+              ),
+              const _LockedFeatureRow(
+                icon: Icons.image_search_rounded,
+                title: 'Gorsel analizi',
+                subtitle: 'Not ve ekran goruntusunden metin cikarir.',
+              ),
+              const _LockedFeatureRow(
+                icon: Icons.quiz_outlined,
+                title: 'Dokuman sorulari',
+                subtitle: 'Yuklenen icerik uzerinden soru-cevap yapar.',
+              ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PremiumView()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.kPrimaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            _LockedFeatureRow(
-              icon: Icons.picture_as_pdf_rounded,
-              title: 'PDF ozetleri',
-              subtitle: 'Yuklenen PDF icin hizli ozet ve ana noktalar',
-            ),
-            _LockedFeatureRow(
-              icon: Icons.photo_library_outlined,
-              title: 'Fotograf ozetleri',
-              subtitle:
-                  'Not, slayt ve ekran goruntusundeki metni ozetle ve ana basliklari cikar',
-            ),
-            _LockedFeatureRow(
-              icon: Icons.quiz_outlined,
-              title: 'Dokuman bazli soru-cevap',
-              subtitle: 'Yukleme sonrasi icerik uzerinden soru sor',
-            ),
-            _LockedFeatureRow(
-              icon: Icons.smart_toy_outlined,
-              title: 'Genel amacli K-Bot sohbeti',
-              subtitle: 'Cihaz ici premium ogrenim asistani deneyimi',
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PremiumView()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1DA1F2),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+                  child: const Text(
+                    'Premiuma gec',
+                    style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
-                child: const Text(
-                  'Premium al ve K-Bot ac',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -394,170 +378,75 @@ class _KBotViewState extends State<KBotView> {
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(Icons.auto_awesome_rounded, size: 22),
-            SizedBox(width: 8),
+            Icon(Icons.smart_toy_rounded, size: 22),
+            SizedBox(width: 10),
             Text('K-Bot'),
           ],
         ),
         backgroundColor: widget.kPrimaryColor,
         foregroundColor: Colors.white,
-        elevation: 0,
+        elevation: 1,
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.workspace_premium_rounded,
-                      color: widget.kPrimaryColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Premium K-Bot',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
-                        color: AppColors.textHeader,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _activeDocumentLabel(),
-                  style: TextStyle(
-                    color: AppColors.textBody,
-                    fontSize: 12.5,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    FilledButton.icon(
-                      onPressed: _isProcessingAttachment ? null : _pickPdf,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: widget.kPrimaryColor,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      icon: const Icon(Icons.picture_as_pdf_rounded, size: 18),
-                      label: const Text('PDF sec'),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: _isProcessingAttachment
-                          ? null
-                          : () => _pickImage(ImageSource.gallery),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.textHeader,
-                        side: BorderSide(color: AppColors.border),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      icon: const Icon(Icons.photo_library_outlined, size: 18),
-                      label: const Text('Fotograf sec'),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: _isProcessingAttachment
-                          ? null
-                          : () => _pickImage(ImageSource.camera),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.textHeader,
-                        side: BorderSide(color: AppColors.border),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                      label: const Text('Kamera'),
-                    ),
-                    if (_activeDocument != null)
-                      OutlinedButton.icon(
-                        onPressed: _clearDocumentContext,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.textHeader,
-                          side: BorderSide(color: AppColors.border),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        icon: const Icon(Icons.close_rounded, size: 18),
-                        label: const Text('Belge kaldir'),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (_messages.length <= 2)
+          if (_activeDocument != null || _isProcessingAttachment)
             Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _PromptChip(
-                      label: 'Ne yapabiliyorsun?',
-                      onTap: () => _usePrompt('Ne yapabiliyorsun?'),
-                    ),
-                    _PromptChip(
-                      label: 'Calisma plani yap',
-                      onTap: () => _usePrompt('Bana calisma plani yap'),
-                    ),
-                    _PromptChip(
-                      label: _activeDocument == null
-                          ? 'Fotograf ozeti'
-                          : 'Ana noktalar',
-                      onTap: () => _usePrompt(
-                        _activeDocument == null
-                            ? 'Fotograf yuklersem nasil ozet cikartirsin?'
-                            : 'Ana noktalar neler?',
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    _isProcessingAttachment
+                        ? Icons.hourglass_bottom_rounded
+                        : Icons.description_outlined,
+                    color: widget.kPrimaryColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _isProcessingAttachment
+                          ? 'Dosya analiz ediliyor...'
+                          : _activeDocumentLabel(),
+                      style: TextStyle(
+                        color: AppColors.textBody,
+                        fontSize: 12.5,
+                        height: 1.35,
                       ),
                     ),
-                    _PromptChip(
-                      label: 'Soru hazirla',
-                      onTap: () => _usePrompt('Bu konudan soru hazirla'),
+                  ),
+                  if (_activeDocument != null && !_isProcessingAttachment)
+                    TextButton(
+                      onPressed: _clearDocumentContext,
+                      child: const Text('Temizle'),
                     ),
-                  ],
-                ),
+                ],
               ),
             ),
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
               itemCount: _messages.length + (_isTyping ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _messages.length && _isTyping) {
                   return Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(bottom: 8),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                        horizontal: 12,
+                        vertical: 10,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -574,7 +463,7 @@ class _KBotViewState extends State<KBotView> {
                           Text(
                             _isProcessingAttachment
                                 ? 'Dosya okunuyor...'
-                                : 'K-Bot dusunuyor...',
+                                : 'K-Bot yaziyor...',
                             style: TextStyle(
                               color: AppColors.textBody,
                               fontSize: 13,
@@ -594,25 +483,28 @@ class _KBotViewState extends State<KBotView> {
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(bottom: 8),
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.82,
+                      maxWidth: MediaQuery.of(context).size.width * 0.86,
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: 14,
+                      vertical: 11,
                     ),
                     decoration: BoxDecoration(
                       color: isUser ? widget.kPrimaryColor : AppColors.surface,
+                      border: isUser
+                          ? null
+                          : Border.all(color: AppColors.border),
                       borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(16),
-                        topRight: const Radius.circular(16),
+                        topLeft: const Radius.circular(14),
+                        topRight: const Radius.circular(14),
                         bottomLeft: isUser
-                            ? const Radius.circular(16)
+                            ? const Radius.circular(14)
                             : Radius.zero,
                         bottomRight: isUser
                             ? Radius.zero
-                            : const Radius.circular(16),
+                            : const Radius.circular(14),
                       ),
                     ),
                     child: Column(
@@ -631,7 +523,7 @@ class _KBotViewState extends State<KBotView> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'K-Bot Premium',
+                                  'K-Bot',
                                   style: TextStyle(
                                     color: widget.kPrimaryColor,
                                     fontWeight: FontWeight.bold,
@@ -647,7 +539,7 @@ class _KBotViewState extends State<KBotView> {
                             color: isUser
                                 ? Colors.white
                                 : Theme.of(context).colorScheme.onSurface,
-                            fontSize: 14,
+                            fontSize: 13.5,
                             height: 1.45,
                           ),
                         ),
@@ -659,12 +551,10 @@ class _KBotViewState extends State<KBotView> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 5),
-              ],
+              border: Border(top: BorderSide(color: AppColors.border)),
             ),
             child: Row(
               children: [
@@ -673,7 +563,7 @@ class _KBotViewState extends State<KBotView> {
                       ? null
                       : _showAttachmentSheet,
                   icon: Icon(
-                    Icons.attach_file_rounded,
+                    Icons.add_circle_outline_rounded,
                     color: widget.kPrimaryColor,
                   ),
                 ),
@@ -682,8 +572,8 @@ class _KBotViewState extends State<KBotView> {
                     controller: _controller,
                     decoration: InputDecoration(
                       hintText: _activeDocument == null
-                          ? 'K-Bot\'a bir sey sor...'
-                          : 'PDF, fotograf veya genel sohbet icin mesaj yaz...',
+                          ? 'Mesaj yaz...'
+                          : 'Dokuman hakkinda sorunu yaz...',
                       hintStyle: TextStyle(color: AppColors.textBody),
                       fillColor: AppColors.background,
                       filled: true,
@@ -696,13 +586,14 @@ class _KBotViewState extends State<KBotView> {
                         vertical: 10,
                       ),
                     ),
+                    textInputAction: TextInputAction.send,
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 CircleAvatar(
                   backgroundColor: widget.kPrimaryColor,
-                  radius: 22,
+                  radius: 20,
                   child: IconButton(
                     icon: const Icon(Icons.send, color: Colors.white, size: 20),
                     onPressed: _sendMessage,
