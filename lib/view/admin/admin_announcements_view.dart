@@ -23,21 +23,21 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
   String _storageErrorMessage(FirebaseException e) {
     switch (e.code) {
       case 'unauthorized':
-        return 'Storage yetkisi yok (unauthorized). Firebase Storage kurallarini kontrol edin.';
+        return 'Storage yetkisi yok (unauthorized). Firebase Storage kurallarını kontrol edin.';
       case 'object-not-found':
-        return 'Yuklenecek dosya bulunamadi.';
+        return 'Yüklenecek dosya bulunamadı.';
       case 'bucket-not-found':
-        return 'Storage bucket bulunamadi. Firebase config kontrol edilmeli.';
+        return 'Storage bucket bulunamadı. Firebase config kontrol edilmeli.';
       case 'project-not-found':
-        return 'Firebase projesi bulunamadi veya baglanti sorunu var.';
+        return 'Firebase projesi bulunamadı veya bağlantı sorunu var.';
       case 'quota-exceeded':
-        return 'Storage kotasi asildi.';
+        return 'Storage kotası aşıldı.';
       case 'retry-limit-exceeded':
-        return 'Baglanti sorunu nedeniyle yukleme zaman asimina ugradi.';
+        return 'Bağlantı sorunu nedeniyle yükleme zaman aşımına uğradı.';
       case 'network-request-failed':
-        return 'Internet baglantisi nedeniyle yukleme basarisiz oldu.';
+        return 'İnternet bağlantısı nedeniyle yükleme başarısız oldu.';
       default:
-        return e.message ?? 'Gorsel yuklenemedi.';
+        return e.message ?? 'Görsel yüklenemedi.';
     }
   }
 
@@ -67,7 +67,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: Text(document == null ? "Yeni Ekle" : "Duzenle"),
+              title: Text(document == null ? "Yeni Ekle" : "Düzenle"),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -75,16 +75,16 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                     DropdownButtonFormField<String>(
                       initialValue: selectedType,
                       decoration: const InputDecoration(
-                        labelText: "Gosterim Yeri",
+                        labelText: "Gösterim Yeri",
                       ),
                       items: const [
                         DropdownMenuItem(
                           value: "slider",
-                          child: Text("Ana Sayfa Slider (Ust Kisim)"),
+                          child: Text("Ana Sayfa Slider (Üst Kısım)"),
                         ),
                         DropdownMenuItem(
                           value: "opportunity",
-                          child: Text("Firsatlar Listesi (Alt Kisim)"),
+                          child: Text("Fırsatlar Listesi (Alt Kısım)"),
                         ),
                       ],
                       onChanged: (val) {
@@ -95,14 +95,14 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                     const SizedBox(height: 10),
                     TextField(
                       controller: titleController,
-                      decoration: const InputDecoration(labelText: "Baslik"),
+                      decoration: const InputDecoration(labelText: "Başlık"),
                     ),
                     const SizedBox(height: 10),
                     TextField(
                       controller: descriptionController,
                       maxLines: 2,
                       decoration: const InputDecoration(
-                        labelText: "Kisa Aciklama (Listede gorunur)",
+                        labelText: "Kısa Açıklama (Listede görünür)",
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -110,7 +110,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                       controller: fullContentController,
                       maxLines: 5,
                       decoration: const InputDecoration(
-                        labelText: "Detayli Bilgi (Tiklayinca acilir)",
+                        labelText: "Detaylı Bilgi (Tıklayınca açılır)",
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -126,7 +126,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                           sourcePath: picked.path,
                           uiSettings: [
                             AndroidUiSettings(
-                              toolbarTitle: 'Gorseli Duzenle',
+                              toolbarTitle: 'Görseli Düzenle',
                               toolbarColor: AppColors.primary,
                               toolbarWidgetColor: Colors.white,
                               activeControlsWidgetColor: AppColors.primary,
@@ -134,7 +134,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                               initAspectRatio: CropAspectRatioPreset.ratio16x9,
                               lockAspectRatio: false,
                             ),
-                            IOSUiSettings(title: 'Gorseli Duzenle'),
+                            IOSUiSettings(title: 'Görseli Düzenle'),
                           ],
                         );
                         if (cropped == null) return;
@@ -175,7 +175,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    "Cihazdan Gorsel Sec",
+                                    "Cihazdan Görsel Seç",
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                 ],
@@ -209,7 +209,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Iptal"),
+                  child: const Text("İptal"),
                 ),
                 ElevatedButton(
                   onPressed: isUploading
@@ -218,7 +218,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                           if (titleController.text.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Baslik zorunludur!"),
+                                content: Text("Başlık zorunludur!"),
                               ),
                             );
                             return;
@@ -228,7 +228,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                               existingImageUrl == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Lutfen bir gorsel secin!"),
+                                content: Text("Lütfen bir görsel seçin!"),
                               ),
                             );
                             return;
@@ -256,7 +256,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                               if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Gorsel yukleme hatasi: $e'),
+                                  content: Text('Görsel yükleme hatası: $e'),
                                 ),
                               );
                               return;
@@ -270,7 +270,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                           if (finalImageUrl == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Gorsel bulunamadi."),
+                                content: Text("Görsel bulunamadı."),
                               ),
                             );
                             return;
@@ -318,11 +318,11 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Silmeyi Onayla"),
-        content: const Text("Bunu silmek istediginizden emin misiniz?"),
+        content: const Text("Bunu silmek istediğinizden emin misiniz?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Hayir"),
+            child: const Text("Hayır"),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
@@ -348,7 +348,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("Duyuru & Firsat Yonetimi", style: TextStyle(color: AppColors.textHeader)),
+        title: Text("Duyuru & Fırsat Yönetimi", style: TextStyle(color: AppColors.textHeader)),
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textHeader,
         iconTheme: IconThemeData(color: AppColors.textHeader),
@@ -371,7 +371,7 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("Henuz hic duyuru eklenmemis."));
+            return const Center(child: Text("Henüz hiç duyuru eklenmemiş."));
           }
 
           final items = snapshot.data!.docs;
@@ -381,8 +381,8 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
               final item = items[index].data() as Map<String, dynamic>;
               final isActive = item['isActive'] ?? true;
               final typeStr = item['type'] == 'slider'
-                  ? "Slider (Ust)"
-                  : "Firsat (Alt)";
+                  ? "Slider (Üst)"
+                  : "Fırsat (Alt)";
 
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -397,9 +397,9 @@ class _AdminAnnouncementsViewState extends State<AdminAnnouncementsView> {
                         ? const Icon(Icons.image)
                         : null,
                   ),
-                  title: Text(item['title'] ?? 'Isimsiz', style: TextStyle(color: AppColors.textHeader)),
+                  title: Text(item['title'] ?? 'İsimsiz', style: TextStyle(color: AppColors.textHeader)),
                   subtitle: Text(
-                    "Tur: $typeStr\nDurum: ${isActive ? 'Yayinda' : 'Gizli'}",
+                    "Tür: $typeStr\nDurum: ${isActive ? 'Yayında' : 'Gizli'}",
                     style: TextStyle(color: AppColors.textBody),
                   ),
                   isThreeLine: true,
