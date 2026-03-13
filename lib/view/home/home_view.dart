@@ -5440,17 +5440,57 @@ class _HomeViewState extends State<HomeView> {
                           VerifiedBadge.hasBlueBadge(myData) ||
                           myData?['role'] == 'admin';
 
+                      final now = DateTime.now();
+                      int last24HoursCount = 0;
+                      int last7DaysCount = 0;
+                      DateTime? latestVisitAt;
+                      for (final doc in visitors) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        final visitedAt = (data['visitedAt'] as Timestamp?)
+                            ?.toDate();
+                        if (visitedAt == null) continue;
+                        if (latestVisitAt == null ||
+                            visitedAt.isAfter(latestVisitAt)) {
+                          latestVisitAt = visitedAt;
+                        }
+                        if (visitedAt.isAfter(
+                          now.subtract(const Duration(hours: 24)),
+                        )) {
+                          last24HoursCount++;
+                        }
+                        if (visitedAt.isAfter(
+                          now.subtract(const Duration(days: 7)),
+                        )) {
+                          last7DaysCount++;
+                        }
+                      }
+
                       return ListView.builder(
                         controller: scrollController,
-                        itemCount: visitors.length,
+                        itemCount:
+                            visitors.length + (hasVisitorAccess ? 1 : 0),
                         itemBuilder: (ctx, index) {
-                          final visit =
-                              visitors[index].data() as Map<String, dynamic>;
+                          if (hasVisitorAccess && index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                              child: _buildVisitorStatsCard(
+                                totalCount: visitors.length,
+                                last24HoursCount: last24HoursCount,
+                                last7DaysCount: last7DaysCount,
+                                latestVisitAt: latestVisitAt,
+                              ),
+                            );
+                          }
+
+                          final visitorIndex =
+                              hasVisitorAccess ? index - 1 : index;
+                          final visit = visitors[visitorIndex].data()
+                              as Map<String, dynamic>;
                           final visitorId = visit['visitorId'] as String;
                           final visitedAt = (visit['visitedAt'] as Timestamp?)
                               ?.toDate();
                           final bool shouldBlur =
-                              !hasVisitorAccess && index >= 2;
+                              !hasVisitorAccess && visitorIndex >= 2;
 
                           return FutureBuilder<DocumentSnapshot>(
                             future: FirebaseFirestore.instance
@@ -5624,6 +5664,124 @@ class _HomeViewState extends State<HomeView> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildVisitorStatsCard({
+    required int totalCount,
+    required int last24HoursCount,
+    required int last7DaysCount,
+    required DateTime? latestVisitAt,
+  }) {
+    final latestVisitText = latestVisitAt == null
+        ? 'Henüz veri yok'
+        : '${latestVisitAt.day.toString().padLeft(2, '0')}.${latestVisitAt.month.toString().padLeft(2, '0')}.${latestVisitAt.year} ${latestVisitAt.hour.toString().padLeft(2, '0')}:${latestVisitAt.minute.toString().padLeft(2, '0')}';
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'İstatistikler',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textHeader,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: _buildVisitorStatItem(
+                  icon: Icons.groups_rounded,
+                  label: 'Toplam',
+                  value: '$totalCount',
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildVisitorStatItem(
+                  icon: Icons.schedule_rounded,
+                  label: '24 Saat',
+                  value: '$last24HoursCount',
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildVisitorStatItem(
+                  icon: Icons.calendar_today_rounded,
+                  label: '7 Gün',
+                  value: '$last7DaysCount',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(
+                Icons.update_rounded,
+                size: 14,
+                color: AppColors.textBody,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  'Son ziyaret: $latestVisitText',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textBody,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVisitorStatItem({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 14, color: AppColors.primary),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textHeader,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: AppColors.textBody,
+            ),
+          ),
+        ],
       ),
     );
   }
