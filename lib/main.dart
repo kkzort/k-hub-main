@@ -14,6 +14,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'core/style/app_colors.dart';
 import 'firebase_options.dart';
 
+// -Made by Kerem Kızmaz-
+
 // ═══ TEMALAR (Mavi-Turkuaz) ═══
 final lightTheme = ThemeData(
   brightness: Brightness.light,
