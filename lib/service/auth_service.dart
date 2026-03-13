@@ -195,7 +195,7 @@ class AuthService {
           await storageService.uploadVerificationDocument(selectedFile, uid);
 
       if (docUrl == null) {
-        throw 'Belge yukleme asamasinda bir sorun olustu.';
+        throw 'Belge yükleme aşamasında bir sorun oluştu.';
       }
 
       await _firestore.collection('users').doc(uid).set({
