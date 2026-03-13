@@ -272,7 +272,7 @@ class _PremiumViewState extends State<PremiumView> {
         ),
         body: Center(
           child: Text(
-            'Premium icin once giris yapman gerekiyor.',
+            'Premium için önce giriş yapman gerekiyor.',
             style: TextStyle(color: AppColors.textBody),
           ),
         ),
@@ -291,7 +291,7 @@ class _PremiumViewState extends State<PremiumView> {
             userData?['premiumStatus'] == 'active';
         final planPrice =
             _premiumProduct?.price ??
-            (_isStoreLoading ? 'Fiyat yukleniyor...' : 'Magaza fiyatı yok');
+            (_isStoreLoading ? 'Fiyat yükleniyor...' : 'Mağaza fiyatı yok');
         final activatedAt = userData?['premiumActivatedAt'] as Timestamp?;
         final activatedText = activatedAt == null
             ? 'Henüz aktif değil'
@@ -359,7 +359,7 @@ class _PremiumViewState extends State<PremiumView> {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
-                              isPremium ? 'AKTIF' : 'OGRENCI PLANI',
+                              isPremium ? 'AKTİF' : 'ÖĞRENCİ PLANI',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -381,8 +381,8 @@ class _PremiumViewState extends State<PremiumView> {
                       const SizedBox(height: 8),
                       Text(
                         isPremium
-                            ? 'Premium hesabin aktif. Mavi tik ve premium ozelliklerin hazir.'
-                            : 'Mavi tik, premium rozet ve gelecek ekstra ozellikler icin ogrenci premium planini aktif et.',
+                            ? 'Premium hesabın aktif. Mavi tik ve premium özelliklerin hazır.'
+                            : 'Mavi tik, premium rozet ve gelecek ekstra özellikler için öğrenci premium planını aktif et.',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
@@ -415,55 +415,55 @@ class _PremiumViewState extends State<PremiumView> {
                 ),
                 const SizedBox(height: 22),
                 _PremiumInfoCard(
-                  title: 'Aninda acilan premium haklari',
+                  title: 'Anında açılan premium hakları',
                   children: const [
                     _PremiumFeatureRow(
                       icon: Icons.verified_rounded,
                       title: 'Mavi tik',
                       subtitle:
-                          'Premium alan ogrenciler profilde ve listelerde mavi tik alir.',
+                          'Premium alan öğrenciler profilde ve listelerde mavi tik alır.',
                     ),
                     _PremiumFeatureRow(
                       icon: Icons.visibility_outlined,
-                      title: 'Tum profil ziyaretcileri',
+                      title: 'Tüm profil ziyaretçileri',
                       subtitle:
-                          'Ziyaret edenlerin tamamini blur olmadan gorebilirsin.',
+                          'Ziyaret edenlerin tamamını blur olmadan görebilirsin.',
                     ),
                     _PremiumFeatureRow(
                       icon: Icons.picture_as_pdf_outlined,
                       title: 'K-Bot AI',
                       subtitle:
-                          'PDF ve fotograf yukleyip ozet cikarabilir, ana noktalar ve dokuman bazli soru-cevap alabilirsin.',
+                          'PDF ve fotoğraf yükleyip özet çıkarabilir, ana noktalar ve doküman bazlı soru-cevap alabilirsin.',
                     ),
                     _PremiumFeatureRow(
                       icon: Icons.auto_awesome_outlined,
-                      title: 'Premium altyapi',
+                      title: 'Premium altyapı',
                       subtitle:
-                          'Ekstra ozellikler sonradan bu planin ustune kolayca eklenebilir.',
+                          'Ekstra özellikler sonradan bu planın üstüne kolayca eklenebilir.',
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 _PremiumInfoCard(
-                  title: 'Yakinda eklenebilecek ekstralar',
+                  title: 'Yakında eklenebilecek ekstralar',
                   children: const [
                     _PremiumFeatureRow(
                       icon: Icons.palette_outlined,
-                      title: 'Ozel profil temalari',
+                      title: 'Özel profil temaları',
                       subtitle:
-                          'Profil kartinda premium gorunum ve vurgu renkleri.',
+                          'Profil kartında premium görünüm ve vurgu renkleri.',
                     ),
                     _PremiumFeatureRow(
                       icon: Icons.forum_outlined,
-                      title: 'Gelişmis mesaj avantajlari',
+                      title: 'Gelişmiş mesaj avantajları',
                       subtitle:
-                          'Mesaj kutusunda ekstra filtre ve sabitleme ozellikleri.',
+                          'Mesaj kutusunda ekstra filtre ve sabitleme özellikleri.',
                     ),
                     _PremiumFeatureRow(
                       icon: Icons.star_outline_rounded,
-                      title: 'Toplululuk avantajlari',
+                      title: 'Topluluk avantajları',
                       subtitle:
-                          'Premium kullanicilara ozel rozet ve on plana cikma alanlari.',
+                          'Premium kullanıcılara özel rozet ve ön plana çıkma alanları.',
                     ),
                   ],
                 ),
@@ -490,12 +490,12 @@ class _PremiumViewState extends State<PremiumView> {
                       isPremium
                           ? 'Premium zaten aktif'
                           : _isPurchasing
-                          ? 'Satın alma isleniyor...'
+                          ? 'Satın alma işleniyor...'
                           : _isStoreLoading
-                          ? 'Magaza hazirlaniyor...'
+                          ? 'Mağaza hazırlanıyor...'
                           : !_storeAvailable
                           ? 'Magaza kullanılamıyor'
-                          : 'Premiumu satin al',
+                          : 'Premiumu satın al',
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,
