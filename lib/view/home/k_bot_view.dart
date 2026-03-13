@@ -630,33 +630,6 @@ class _KBotViewState extends State<KBotView> {
   }
 }
 
-class _PromptChip extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _PromptChip({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: ActionChip(
-        onPressed: onTap,
-        backgroundColor: AppColors.surface,
-        side: BorderSide(color: AppColors.border),
-        label: Text(
-          label,
-          style: TextStyle(
-            color: AppColors.textHeader,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _LockedFeatureRow extends StatelessWidget {
   final IconData icon;
   final String title;
