@@ -1,7 +1,9 @@
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
+const { createHash } = require("node:crypto");
 
 initializeApp();
 
@@ -244,3 +246,92 @@ exports.onNewNotification = onDocumentCreated(
     }
   }
 );
+
+// ─── Premium Dogrulama (Callable) ───
+// Not: Bu akista magazadan gelen veri formati temel seviyede islenir.
+// Uretimde server-side App Store / Play Store receipt verification eklenmelidir.
+exports.verifyPremiumPurchase = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Giris yapmadan islem yapilamaz.");
+  }
+
+  const uid = request.auth.uid;
+  const payload = request.data || {};
+  const productId = typeof payload.productId === "string" ? payload.productId.trim() : "";
+  const purchaseId = typeof payload.purchaseId === "string" ? payload.purchaseId.trim() : "";
+  const transactionDate = typeof payload.transactionDate === "string" ? payload.transactionDate : "";
+  const storeSource = typeof payload.storeSource === "string" ? payload.storeSource : "store_unknown";
+  const purchaseStatus = typeof payload.purchaseStatus === "string" ? payload.purchaseStatus : "unknown";
+  const verificationData = payload.verificationData || {};
+  const serverVerificationData = typeof verificationData.serverVerificationData === "string" ?
+    verificationData.serverVerificationData :
+    "";
+  const localVerificationData = typeof verificationData.localVerificationData === "string" ?
+    verificationData.localVerificationData :
+    "";
+
+  if (!productId) {
+    throw new HttpsError("invalid-argument", "productId zorunlu.");
+  }
+
+  if (productId !== "khub_premium_monthly") {
+    throw new HttpsError("failed-precondition", "Desteklenmeyen urun.");
+  }
+
+  const rawReceiptFingerprint = [
+    uid,
+    productId,
+    purchaseId,
+    transactionDate,
+    serverVerificationData || localVerificationData,
+  ].join("|");
+  const receiptHash = createHash("sha256").update(rawReceiptFingerprint).digest("hex");
+
+  const userRef = db.collection("users").doc(uid);
+  const receiptRef = db.collection("premium_receipts").doc(receiptHash);
+
+  await db.runTransaction(async (tx) => {
+    const existing = await tx.get(receiptRef);
+    if (existing.exists) {
+      const receiptData = existing.data() || {};
+      if (receiptData.uid && receiptData.uid !== uid) {
+        throw new HttpsError("permission-denied", "Bu satin alma kaydi baska hesaba ait.");
+      }
+    } else {
+      tx.set(receiptRef, {
+        uid,
+        productId,
+        purchaseId: purchaseId || null,
+        purchaseStatus,
+        storeSource,
+        transactionDate: transactionDate || null,
+        serverVerificationDataHash: serverVerificationData ?
+          createHash("sha256").update(serverVerificationData).digest("hex") :
+          null,
+        localVerificationDataHash: localVerificationData ?
+          createHash("sha256").update(localVerificationData).digest("hex") :
+          null,
+        receiptHash,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+    }
+
+    tx.set(userRef, {
+      isPremium: true,
+      premiumStatus: "active",
+      premiumPlan: productId,
+      premiumSource: storeSource,
+      premiumPurchaseId: purchaseId || null,
+      premiumProductId: productId,
+      premiumTransactionDate: transactionDate || null,
+      premiumLastVerification: "callable_basic_check_pending_store_validation",
+      premiumActivatedAt: FieldValue.serverTimestamp(),
+      premiumUpdatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+  });
+
+  return {
+    ok: true,
+    premiumStatus: "active",
+  };
+});
