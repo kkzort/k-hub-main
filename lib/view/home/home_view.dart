@@ -7328,197 +7328,32 @@ class _NoteDetailViewState extends State<NoteDetailView> {
   }
 
   void _showPublicProfile(String userName) async {
-    final snap = await FirebaseFirestore.instance
-        .collection('users')
-        .where('nick', isEqualTo: userName)
-        .limit(1)
-        .get();
-
-    Map<String, dynamic>? data;
-    if (snap.docs.isNotEmpty) {
-      data = snap.docs.first.data();
+    Future<String?> findUserIdByField(String field, String value) async {
+      if (value.trim().isEmpty) return null;
+      final snap = await FirebaseFirestore.instance
+          .collection('users')
+          .where(field, isEqualTo: value.trim())
+          .limit(1)
+          .get();
+      if (snap.docs.isEmpty) return null;
+      return snap.docs.first.id;
     }
+
+    String? userId;
+    userId = await findUserIdByField('nick', userName);
+    userId ??= await findUserIdByField('name', userName);
 
     if (!mounted) return;
-
-    final String bio = data?['bio']?.toString() ?? "";
-    final int avatarIdx = (data?['avatarIndex'] is int)
-        ? data!['avatarIndex']
-        : 0;
-    final Map<String, dynamic> socialLinks = _safeStringDynamicMap(
-      data?['socialLinks'],
-    );
-    final String? photoUrl = data?['photoUrl'];
-    final String roleRaw = (data?['role'] ?? 'student')
-        .toString()
-        .toLowerCase();
-    final String roleLabel = roleRaw == 'admin' ? 'Admin' : 'Öğrenci';
-    final String profileEmail = (data?['email'] ?? '').toString();
-    int notesCount = 0;
-    int totalLikes = 0;
-
-    QuerySnapshot<Map<String, dynamic>> notesSnapshot;
-    if (profileEmail.isNotEmpty) {
-      notesSnapshot = await FirebaseFirestore.instance
-          .collection('notes')
-          .where('userEmail', isEqualTo: profileEmail)
-          .get();
-    } else {
-      notesSnapshot = await FirebaseFirestore.instance
-          .collection('notes')
-          .where('userName', isEqualTo: userName)
-          .get();
-    }
-    notesCount = notesSnapshot.docs.length;
-    for (final doc in notesSnapshot.docs) {
-      final likesVal = doc.data()['likes'];
-      if (likesVal is int) {
-        totalLikes += likesVal;
-      } else if (likesVal is num) {
-        totalLikes += likesVal.toInt();
-      }
+    if (userId == null || userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kullanıcı profili bulunamadı.')),
+      );
+      return;
     }
 
-    final List<IconData> avatarIcons = const [
-      Icons.person,
-      Icons.face,
-      Icons.emoji_emotions,
-      Icons.school,
-      Icons.star,
-      Icons.sports_soccer,
-      Icons.music_note,
-      Icons.code,
-    ];
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(ctx).size.height * 0.7,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 44,
-                      backgroundColor: AppColors.primary.withValues(
-                        alpha: 0.12,
-                      ),
-                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
-                          ? NetworkImage(photoUrl)
-                          : null,
-                      child: (photoUrl == null || photoUrl.isEmpty)
-                          ? Icon(
-                              avatarIcons[avatarIdx.clamp(
-                                0,
-                                avatarIcons.length - 1,
-                              )],
-                              size: 44,
-                              color: AppColors.primary,
-                            )
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      userName,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textHeader,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _detailStatTile(
-                            'Toplam Beğeni',
-                            '$totalLikes',
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _detailStatTile(
-                            'Paylaşılan Not',
-                            '$notesCount',
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(child: _detailStatTile('Rol', roleLabel)),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    if (bio.isNotEmpty) ...[
-                      _detailBioCard(bio),
-                      const SizedBox(height: 20),
-                    ],
-                    if (_hasLinks(socialLinks)) ...[
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (final platform in const [
-                              'instagram',
-                              'linkedin',
-                              'x',
-                              'tiktok',
-                              'snapchat',
-                              'facebook',
-                            ])
-                              if (_detailSocialValue(
-                                socialLinks,
-                                platform,
-                              ).isNotEmpty)
-                                _socialIcon(
-                                  ctx,
-                                  platform,
-                                  _toUrl(
-                                    _detailSocialValue(socialLinks, platform),
-                                    platform,
-                                  ),
-                                ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => UserProfileView(userId: userId!)),
     );
   }
 
