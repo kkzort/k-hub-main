@@ -48,6 +48,7 @@ codesign --force --sign - --entitlements "$SIM_SIGN_ENTITLEMENTS" "$SIGNED_APP_P
 
 echo "[4/5] Simülatöre yükleniyor..."
 xcrun simctl boot "$DEVICE_ID" >/dev/null 2>&1 || true
+xcrun simctl keychain "$DEVICE_ID" reset >/dev/null 2>&1 || true
 xcrun simctl terminate "$DEVICE_ID" "$APP_BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl uninstall "$DEVICE_ID" "$APP_BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl install "$DEVICE_ID" "$SIGNED_APP_PATH"
