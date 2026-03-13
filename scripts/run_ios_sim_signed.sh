@@ -7,7 +7,6 @@ APP_BUNDLE_ID="com.khub.app"
 BUILD_APP_PATH="$ROOT_DIR/build/ios/Debug-iphonesimulator/Runner.app"
 SIGNED_APP_DIR="/tmp/khub-signed"
 SIGNED_APP_PATH="$SIGNED_APP_DIR/Runner.app"
-SIM_SIGN_ENTITLEMENTS="$ROOT_DIR/ios/Runner/SimulatorSign.entitlements"
 
 if [[ -z "$DEVICE_ID" ]]; then
   DEVICE_ID="$(xcrun simctl list devices booted | awk -F '[()]' '/Booted/{print $2; exit}')"
@@ -44,7 +43,7 @@ rsync -a "$BUILD_APP_PATH" "$SIGNED_APP_DIR/"
 
 echo "[3/5] Metadata temizlenip ad-hoc imzalanıyor..."
 xattr -rc "$SIGNED_APP_PATH"
-codesign --force --sign - --entitlements "$SIM_SIGN_ENTITLEMENTS" "$SIGNED_APP_PATH"
+codesign --force --sign - "$SIGNED_APP_PATH"
 
 echo "[4/5] Simülatöre yükleniyor..."
 xcrun simctl boot "$DEVICE_ID" >/dev/null 2>&1 || true
