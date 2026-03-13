@@ -31,7 +31,17 @@ service cloud.firestore {
     }
 
     function restrictedUserFields() {
-      return premiumFields().concat([
+      return [
+        'isPremium',
+        'premiumStatus',
+        'premiumPlan',
+        'premiumSource',
+        'premiumPurchaseId',
+        'premiumProductId',
+        'premiumTransactionDate',
+        'premiumLastVerification',
+        'premiumActivatedAt',
+        'premiumUpdatedAt',
         'role',
         'isApproved',
         'approvedAt',
@@ -40,7 +50,7 @@ service cloud.firestore {
         'bannedAt',
         'isVerified',
         'verifiedAt',
-      ]);
+      ];
     }
 
     function safeUserBootstrapValues() {
