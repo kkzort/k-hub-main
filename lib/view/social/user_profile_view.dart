@@ -136,7 +136,7 @@ class _UserProfileViewState extends State<UserProfileView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar & Stats Row (Instagram layout)
+          // Avatar
           Row(
             children: [
               PreviewableProfileAvatar(
@@ -147,69 +147,6 @@ class _UserProfileViewState extends State<UserProfileView> {
                   Icons.person,
                   size: 42,
                   color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // Paylaşım sayısı
-                    StreamBuilder<QuerySnapshot>(
-                      stream: _postService.getUserPosts(widget.userId),
-                      builder: (ctx, snap) => _buildStat(
-                        '${snap.data?.docs.length ?? 0}',
-                        'Gönderi',
-                      ),
-                    ),
-                    // Takipçi sayısı
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('friendships')
-                          .where('receiverId', isEqualTo: widget.userId)
-                          .where('status', isEqualTo: 'accepted')
-                          .snapshots(),
-                      builder: (ctx, snap) {
-                        final followers = snap.data?.docs.length ?? 0;
-                        // Also count where user is requester and accepted
-                        return StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('friendships')
-                              .where('requesterId', isEqualTo: widget.userId)
-                              .where('status', isEqualTo: 'accepted')
-                              .snapshots(),
-                          builder: (ctx2, snap2) {
-                            final total =
-                                followers + (snap2.data?.docs.length ?? 0);
-                            return _buildStat('$total', 'Takipçi');
-                          },
-                        );
-                      },
-                    ),
-                    // Takip sayısı (aynı mantık, ters yön)
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('friendships')
-                          .where('requesterId', isEqualTo: widget.userId)
-                          .where('status', isEqualTo: 'accepted')
-                          .snapshots(),
-                      builder: (ctx, snap) {
-                        final following = snap.data?.docs.length ?? 0;
-                        return StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('friendships')
-                              .where('receiverId', isEqualTo: widget.userId)
-                              .where('status', isEqualTo: 'accepted')
-                              .snapshots(),
-                          builder: (ctx2, snap2) {
-                            final total =
-                                following + (snap2.data?.docs.length ?? 0);
-                            return _buildStat('$total', 'Takip');
-                          },
-                        );
-                      },
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -247,71 +184,6 @@ class _UserProfileViewState extends State<UserProfileView> {
               ),
             ),
 
-          // Beğeni & Not istatistikleri
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              // Toplam beğeni (notlardan)
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('notes')
-                    .where('userEmail', isEqualTo: userData['email'])
-                    .snapshots(),
-                builder: (ctx, snap) {
-                  int totalLikes = 0;
-                  for (final doc in snap.data?.docs ?? []) {
-                    final d = doc.data() as Map<String, dynamic>;
-                    totalLikes += (d['likes'] ?? 0) as int;
-                  }
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.favorite,
-                        size: 14,
-                        color: Colors.red.shade300,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '$totalLikes beğeni',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textBody,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(width: 16),
-              // Paylaşılan not sayısı
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('notes')
-                    .where('email', isEqualTo: userData['email'])
-                    .snapshots(),
-                builder: (ctx, snap) {
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.description_rounded,
-                        size: 14,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${snap.data?.docs.length ?? 0} not',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textBody,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-
           // Action buttons
           if (!isOwnProfile) ...[
             const SizedBox(height: 14),
@@ -346,23 +218,6 @@ class _UserProfileViewState extends State<UserProfileView> {
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildStat(String count, String label) {
-    return Column(
-      children: [
-        Text(
-          count,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: AppColors.textHeader,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(label, style: TextStyle(fontSize: 12, color: AppColors.textBody)),
-      ],
     );
   }
 
