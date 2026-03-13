@@ -133,8 +133,9 @@ class _PremiumViewState extends State<PremiumView> {
     if (user == null) return false;
 
     try {
-      final callable = FirebaseFunctions.instance
-          .httpsCallable('verifyPremiumPurchase');
+      final callable = FirebaseFunctions.instance.httpsCallable(
+        'verifyPremiumPurchase',
+      );
       final result = await callable.call({
         'productId': purchase.productID,
         'purchaseId': purchase.purchaseID,
@@ -187,9 +188,7 @@ class _PremiumViewState extends State<PremiumView> {
           _processedPurchases.add(purchaseKey);
           final activated = await _activatePremiumFromPurchase(purchase);
           if (activated) {
-            _showMessage(
-              'Premium aktif edildi. Satın alma kaydın işlendi.',
-            );
+            _showMessage('Premium aktif edildi. Satın alma kaydın işlendi.');
           } else {
             _showMessage(
               'Satın alma alındı fakat premium doğrulanamadı. Tekrar dene.',
