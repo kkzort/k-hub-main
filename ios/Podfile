@@ -27,6 +27,58 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
+def patch_pods_copy_scripts(installer)
+  support_dir = File.join(installer.sandbox.root.to_s, 'Target Support Files', 'Pods-Runner')
+  frameworks_script = File.join(support_dir, 'Pods-Runner-frameworks.sh')
+  resources_script = File.join(support_dir, 'Pods-Runner-resources.sh')
+
+  if File.exist?(frameworks_script)
+    content = File.read(frameworks_script)
+    unless content.include?('export COPYFILE_DISABLE=1')
+      content.sub!(
+        "trap 'on_error $LINENO' ERR\n",
+        "trap 'on_error $LINENO' ERR\n\n# Prevent metadata (xattr/resource fork) from being copied into app bundle.\nexport COPYFILE_DISABLE=1\n"
+      )
+    end
+    unless content.include?('xattr -rc "${destination}/$(basename "$1")" || true')
+      content.sub!(
+        "  # Resign the code if required by the build settings to avoid unstable apps\n",
+        "  # Resign the code if required by the build settings to avoid unstable apps\n  xattr -rc \"${destination}/$(basename \"$1\")\" || true\n"
+      )
+    end
+    File.write(frameworks_script, content)
+  end
+
+  if File.exist?(resources_script)
+    content = File.read(resources_script)
+    unless content.include?('export COPYFILE_DISABLE=1')
+      content.sub!(
+        "trap 'on_error $LINENO' ERR\n",
+        "trap 'on_error $LINENO' ERR\n\n# Prevent metadata (xattr/resource fork) from being copied into app bundle.\nexport COPYFILE_DISABLE=1\n"
+      )
+    end
+    unless content.include?('xattr -rc "${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/$(basename "$RESOURCE_PATH")" || true')
+      content.sub!(
+        "      rsync --delete -av \"${RSYNC_PROTECT_TMP_FILES[@]}\" \"$RESOURCE_PATH\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n",
+        "      rsync --delete -av \"${RSYNC_PROTECT_TMP_FILES[@]}\" \"$RESOURCE_PATH\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n      xattr -rc \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/$(basename \"$RESOURCE_PATH\")\" || true\n"
+      )
+    end
+    unless content.include?('xattr -rc "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}" || true')
+      content.sub!(
+        "rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from=\"$RESOURCES_TO_COPY\" / \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n",
+        "rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from=\"$RESOURCES_TO_COPY\" / \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nxattr -rc \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" || true\n"
+      )
+    end
+    unless content.include?('xattr -rc "${INSTALL_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}" || true')
+      content.sub!(
+        "  rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from=\"$RESOURCES_TO_COPY\" / \"${INSTALL_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n",
+        "  rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from=\"$RESOURCES_TO_COPY\" / \"${INSTALL_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n  xattr -rc \"${INSTALL_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" || true\n"
+      )
+    end
+    File.write(resources_script, content)
+  end
+end
+
 target 'Runner' do
   use_frameworks!
 
@@ -43,6 +95,7 @@ post_install do |installer|
       config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
     end
   end
+  patch_pods_copy_scripts(installer)
   # Strip extended attributes to prevent CodeSign resource fork errors
   system("xattr -rc #{installer.sandbox.root} 2>/dev/null")
 end
