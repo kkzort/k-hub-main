@@ -84,7 +84,7 @@ class _WaitingApprovalViewState extends State<WaitingApprovalView> {
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    'Kayit Islemi Devam Ediyor',
+                    'Kayıt İşlemi Devam Ediyor',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,
@@ -94,7 +94,7 @@ class _WaitingApprovalViewState extends State<WaitingApprovalView> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Ogrenci belgeniz yetkililerimiz tarafindan incelenmektedir.\n\nBu islem genellikle 6 saat icerisinde tamamlanir. Onaylandiginda uygulamayi tam yetkiyle kullanabilirsiniz.',
+                    'Öğrenci belgeniz yetkililerimiz tarafından incelenmektedir.\n\nBu işlem genellikle 6 saat içerisinde tamamlanır. Onaylandığında uygulamayı tam yetkiyle kullanabilirsiniz.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -130,7 +130,7 @@ class _WaitingApprovalViewState extends State<WaitingApprovalView> {
                       ),
                       alignment: Alignment.center,
                       child: const Text(
-                        'Giris Ekranina Don',
+                        'Giriş Ekranına Dön',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
