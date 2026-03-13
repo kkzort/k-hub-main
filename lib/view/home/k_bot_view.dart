@@ -185,11 +185,6 @@ class _KBotViewState extends State<KBotView> {
     _scrollToBottom();
   }
 
-  void _usePrompt(String prompt) {
-    _controller.text = prompt;
-    _sendMessage();
-  }
-
   void _showAttachmentSheet() {
     if (_isProcessingAttachment) return;
 
