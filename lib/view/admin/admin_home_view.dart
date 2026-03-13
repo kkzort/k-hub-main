@@ -138,8 +138,8 @@ class _AdminHomeViewState extends State<AdminHomeView> {
             const SizedBox(height: 10),
             _buildAdminCard(
               context,
-              title: "On Kayitlar",
-              subtitle: "Etkinliklere kayit yaptiran ogrencileri gor",
+              title: "Ön Kayıtlar",
+              subtitle: "Etkinliklere kayıt yaptıran öğrencileri gör",
               icon: Icons.how_to_reg_rounded,
               color: Colors.deepOrange,
               onTap: () => Navigator.push(
@@ -275,7 +275,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
             _buildAdminCard(
               context,
               title: "Blacklist",
-              subtitle: "Banlanan kullanicilari yonet",
+              subtitle: "Banlanan kullanıcıları yönet",
               icon: Icons.block,
               color: Colors.redAccent,
               onTap: () => Navigator.push(
