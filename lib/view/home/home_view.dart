@@ -2035,7 +2035,18 @@ class _HomeViewState extends State<HomeView> {
                 trailing: currentUser != null && otherUid.isNotEmpty
                     ? _buildFollowButton(otherUid, u)
                     : null,
-                onTap: () => _showUserProfileBottomSheet(nick),
+                onTap: () {
+                  if (otherUid.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => UserProfileView(userId: otherUid),
+                      ),
+                    );
+                    return;
+                  }
+                  _showUserProfileBottomSheet(nick);
+                },
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 4,
