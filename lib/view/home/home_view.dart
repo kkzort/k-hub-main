@@ -7220,12 +7220,13 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     required Color borderColor,
     bool isFirst = false,
   }) {
-    String nameObj = user.key.split(' ').first;
-    if (user.key.split(' ').length > 1) {
-      nameObj += " ${user.key.split(' ').last[0]}.";
+    final nameParts = user.key.trim().split(RegExp(r'\s+'));
+    String nameObj = nameParts.first;
+    if (nameParts.length > 1 && nameParts.last.isNotEmpty) {
+      nameObj += " ${nameParts.last[0]}.";
     }
 
-    String likesStr = user.value > 999
+    final likesStr = user.value > 999
         ? "${(user.value / 1000).toStringAsFixed(1)}k"
         : "${user.value}";
 
@@ -7352,12 +7353,12 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     Map<String, String?> images,
   ) {
     final List<Widget> listItems = [];
+    final currentUserName = FirebaseAuth.instance.currentUser?.displayName;
 
     for (int i = 3; i < users.length; i++) {
       var user = users[i];
       String dept = departments[user.key] ?? "ÖĞRENCİ";
-      bool isCurrentUser =
-          user.key == FirebaseAuth.instance.currentUser?.displayName;
+      bool isCurrentUser = user.key == currentUserName;
 
       listItems.add(
         Container(
