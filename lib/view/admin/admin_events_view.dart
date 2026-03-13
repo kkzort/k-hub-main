@@ -23,28 +23,28 @@ class _AdminEventsViewState extends State<AdminEventsView> {
   final ImagePicker _imagePicker = ImagePicker();
 
   String _formatDate(Timestamp? timestamp) {
-    if (timestamp == null) return 'Tarih belirtilmemis';
+    if (timestamp == null) return 'Tarih belirtilmemiş';
     return DateFormat('dd.MM.yyyy HH:mm').format(timestamp.toDate());
   }
 
   String _defaultDiscountNote() {
-    return 'On kayit yaptiran ogrenciler etkinlik girisinde ogrenci indirimi ve oncelikli bilgilendirme avantajindan yararlanir.';
+    return 'Ön kayıt yaptıran öğrenciler etkinlik girişinde öğrenci indirimi ve öncelikli bilgilendirme avantajından yararlanır.';
   }
 
   String _storageErrorMessage(FirebaseException e) {
     switch (e.code) {
       case 'unauthorized':
-        return 'Storage yetkisi yok. Firebase Storage kurallarini kontrol et.';
+        return 'Storage yetkisi yok. Firebase Storage kurallarını kontrol et.';
       case 'object-not-found':
-        return 'Yuklenecek gorsel bulunamadi.';
+        return 'Yüklenecek görsel bulunamadı.';
       case 'bucket-not-found':
-        return 'Storage bucket bulunamadi.';
+        return 'Storage bucket bulunamadı.';
       case 'quota-exceeded':
-        return 'Storage kotasi asildi.';
+        return 'Storage kotası aşıldı.';
       case 'network-request-failed':
-        return 'Internet baglantisi nedeniyle yukleme basarisiz oldu.';
+        return 'İnternet bağlantısı nedeniyle yükleme başarısız oldu.';
       default:
-        return e.message ?? 'Gorsel yuklenemedi.';
+        return e.message ?? 'Görsel yüklenemedi.';
     }
   }
 
@@ -59,7 +59,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
       sourcePath: picked.path,
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Etkinlik Gorseli',
+          toolbarTitle: 'Etkinlik Görseli',
           toolbarColor: AppColors.primary,
           toolbarWidgetColor: Colors.white,
           activeControlsWidgetColor: AppColors.primary,
@@ -67,7 +67,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
           initAspectRatio: CropAspectRatioPreset.ratio16x9,
           lockAspectRatio: false,
         ),
-        IOSUiSettings(title: 'Etkinlik Gorseli'),
+        IOSUiSettings(title: 'Etkinlik Görseli'),
       ],
     );
     if (cropped == null) return null;
@@ -108,7 +108,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
         builder: (context, setDialogState) {
           return AlertDialog(
             title: Text(
-              doc == null ? 'Yeni Etkinlik Ekle' : 'Etkinligi Duzenle',
+              doc == null ? 'Yeni Etkinlik Ekle' : 'Etkinliği Düzenle',
             ),
             content: SingleChildScrollView(
               child: Column(
@@ -154,7 +154,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Etkinlik gorseli sec',
+                                  'Etkinlik görseli seç',
                                   style: TextStyle(color: Colors.grey),
                                 ),
                               ],
@@ -181,20 +181,20 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                   TextField(
                     controller: titleController,
                     decoration: const InputDecoration(
-                      labelText: 'Etkinlik Adi',
+                      labelText: 'Etkinlik Adı',
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: descriptionController,
                     maxLines: 3,
-                    decoration: const InputDecoration(labelText: 'Aciklama'),
+                    decoration: const InputDecoration(labelText: 'Açıklama'),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: locationController,
                     decoration: const InputDecoration(
-                      labelText: 'Konum (Orn: A Blok)',
+                      labelText: 'Konum (Örn: A Blok)',
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -238,9 +238,9 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                     value: preRegistrationEnabled,
                     activeThumbColor: AppColors.primary,
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('On kayit aktif olsun'),
+                    title: const Text('Ön kayıt aktif olsun'),
                     subtitle: const Text(
-                      'Detay ekraninda on kayit ve ogrenci indirimi gosterilir.',
+                      'Detay ekranında ön kayıt ve öğrenci indirimi gösterilir.',
                     ),
                     onChanged: (value) {
                       setDialogState(() {
@@ -254,7 +254,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                       controller: discountController,
                       maxLines: 3,
                       decoration: const InputDecoration(
-                        labelText: 'Indirim ve bilgilendirme notu',
+                        labelText: 'İndirim ve bilgilendirme notu',
                       ),
                     ),
                   ],
@@ -269,7 +269,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Iptal'),
+                child: const Text('İptal'),
               ),
               ElevatedButton(
                 onPressed: isUploading
@@ -296,7 +296,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Gorsel yukleme hatasi: $e'),
+                                content: Text('Görsel yükleme hatası: $e'),
                               ),
                             );
                             return;
@@ -354,14 +354,14 @@ class _AdminEventsViewState extends State<AdminEventsView> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Etkinligi Sil'),
+        title: const Text('Etkinliği Sil'),
         content: const Text(
-          'Bu etkinligi ve ona ait on kayitlari silmek istedigine emin misin?',
+          'Bu etkinliği ve ona ait ön kayıtları silmek istediğine emin misin?',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Hayir'),
+                child: const Text('Hayır'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
@@ -393,7 +393,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          'Etkinlik Yonetimi',
+          'Etkinlik Yönetimi',
           style: TextStyle(color: AppColors.textHeader),
         ),
         backgroundColor: AppColors.surface,
@@ -401,7 +401,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
         iconTheme: IconThemeData(color: AppColors.textHeader),
         actions: [
           IconButton(
-            tooltip: 'On kayitlar',
+            tooltip: 'Ön kayıtlar',
             onPressed: () {
               Navigator.push(
                 context,
@@ -433,7 +433,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Text(
-                'Henuz etkinlik eklenmemis.',
+                'Henüz etkinlik eklenmemiş.',
                 style: TextStyle(color: AppColors.textTertiary),
               ),
             );
@@ -541,7 +541,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                                   if (preRegistrationEnabled)
                                     Chip(
                                       label: const Text(
-                                        'On kayit acik',
+                                        'Ön kayıt açık',
                                         style: TextStyle(fontSize: 11),
                                       ),
                                       backgroundColor: AppColors.primaryLight,
@@ -550,7 +550,7 @@ class _AdminEventsViewState extends State<AdminEventsView> {
                                   if (!isPast)
                                     Chip(
                                       label: const Text(
-                                        'Gorselli kart',
+                                        'Görselli kart',
                                         style: TextStyle(fontSize: 11),
                                       ),
                                       backgroundColor: Colors.orange.withValues(
