@@ -197,17 +197,18 @@
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
-			buildPhases = (
-				14CFBF5E8D90EC35294FB177 /* [CP] Check Pods Manifest.lock */,
-				9740EEB61CF901F6004384FC /* Run Script */,
-				97C146EA1CF9000F007C117D /* Sources */,
-				97C146EB1CF9000F007C117D /* Frameworks */,
-				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				D10A34AF2AA912469411F830 /* [CP] Embed Pods Frameworks */,
-				586DB5F8DCDE600497D11392 /* [CP] Copy Pods Resources */,
-			);
+				buildPhases = (
+					14CFBF5E8D90EC35294FB177 /* [CP] Check Pods Manifest.lock */,
+					9740EEB61CF901F6004384FC /* Run Script */,
+					97C146EA1CF9000F007C117D /* Sources */,
+					97C146EB1CF9000F007C117D /* Frameworks */,
+					97C146EC1CF9000F007C117D /* Resources */,
+					9705A1C41CF9048500538489 /* Embed Frameworks */,
+					3B06AD1E1E4923F5004D2608 /* Thin Binary */,
+					D10A34AF2AA912469411F830 /* [CP] Embed Pods Frameworks */,
+					586DB5F8DCDE600497D11392 /* [CP] Copy Pods Resources */,
+					A1B2C3D4E5F6789012345678 /* Strip Xattr Before Sign */,
+				);
 			buildRules = (
 			);
 			dependencies = (
@@ -371,9 +372,9 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		D10A34AF2AA912469411F830 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			D10A34AF2AA912469411F830 /* [CP] Embed Pods Frameworks */ = {
+				isa = PBXShellScriptBuildPhase;
+				buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
@@ -385,10 +386,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
+				shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
+				showEnvVarsInLog = 0;
+			};
+			A1B2C3D4E5F6789012345678 /* Strip Xattr Before Sign */ = {
+				isa = PBXShellScriptBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+				);
+				inputPaths = (
+				);
+				name = "Strip Xattr Before Sign";
+				outputPaths = (
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+				shellPath = /bin/sh;
+				shellScript = "xattr -rc \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\" || true\n";
+				showEnvVarsInLog = 0;
+			};
+	/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		331C807D294A63A400263BE5 /* Sources */ = {
