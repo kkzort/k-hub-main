@@ -84,21 +84,21 @@ class _AdminToolsViewState extends State<AdminToolsView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(document == null ? 'Yeni Arac Ekle' : 'Araci Duzenle'),
+          title: Text(document == null ? 'Yeni Araç Ekle' : 'Aracı Düzenle'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Arac Adi'),
+                decoration: const InputDecoration(labelText: 'Araç Adı'),
               ),
               TextField(
                 controller: iconController,
-                decoration: const InputDecoration(labelText: 'Ikon Adi'),
+                decoration: const InputDecoration(labelText: 'İkon Adı'),
               ),
               const SizedBox(height: 10),
               Text(
-                'Ikon adlari icin Material Icons listesini kullanabilirsiniz.',
+                'İkon adları için Material Icons listesini kullanabilirsiniz.',
                 style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
               ),
             ],
@@ -106,7 +106,7 @@ class _AdminToolsViewState extends State<AdminToolsView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Iptal'),
+              child: const Text('İptal'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -144,11 +144,11 @@ class _AdminToolsViewState extends State<AdminToolsView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Silmeyi Onayla'),
-        content: const Text('Bu araci silmek istediginizden emin misiniz?'),
+        content: const Text('Bu aracı silmek istediğinizden emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Hayir'),
+            child: const Text('Hayır'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
@@ -175,7 +175,7 @@ class _AdminToolsViewState extends State<AdminToolsView> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          'Araclari Yonet',
+          'Araçları Yönet',
           style: TextStyle(color: AppColors.textHeader),
         ),
         backgroundColor: AppColors.surface,
@@ -196,7 +196,7 @@ class _AdminToolsViewState extends State<AdminToolsView> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Henuz hic arac eklenmemis.'));
+            return const Center(child: Text('Henüz hiç araç eklenmemiş.'));
           }
 
           final tools = snapshot.data!.docs;
@@ -218,7 +218,7 @@ class _AdminToolsViewState extends State<AdminToolsView> {
                       style: TextStyle(color: AppColors.textHeader),
                     ),
                     subtitle: Text(
-                      'Ikon: ${tool['iconName']}',
+                      'İkon: ${tool['iconName']}',
                       style: TextStyle(color: AppColors.textBody),
                     ),
                     trailing: SizedBox(
